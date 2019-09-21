@@ -1,0 +1,6 @@
+%{
+  "cidr": {:hex, :cidr, "1.1.0", "77ab79e3d694d6d315c2e7dea1c66710623488ab7595316d3e2987aebe0def25", [:mix], [], "hexpm"},
+  "earmark": {:hex, :earmark, "1.4.0", "397e750b879df18198afc66505ca87ecf6a96645545585899f6185178433cc09", [:mix], [], "hexpm"},
+  "iplist": {:hex, :iplist, "1.0.2", "bea02d1480b4bbbbecf2c78625cafe01757e6cd4cc7dd8239566728650b8e84d", [:mix], [{:cidr, ">= 0.2.0", [hex: :cidr, repo: "hexpm", optional: false]}, {:earmark, ">= 0.0.0", [hex: :earmark, repo: "hexpm", optional: false]}], "hexpm"},
+  "socket": {:hex, :socket, "0.3.13", "98a2ab20ce17f95fb512c5cadddba32b57273e0d2dba2d2e5f976c5969d0c632", [:mix], [], "hexpm"},
+}
