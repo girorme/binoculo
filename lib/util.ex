@@ -2,7 +2,8 @@ defmodule Binoculo.Util do
   @version "1.0.0"
   @commands %{
     "--help | -h" => "Show Binoculo usage",
-    "--ip" => "CIDR notation/ip_range"
+    "--ip" => "CIDR notation/ip_range",
+    "-p | --port" => "Port to scan"
   }
 
   def help() do
