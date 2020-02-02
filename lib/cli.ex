@@ -44,13 +44,13 @@ defmodule Binoculo.CLI do
   end
 
   def finish({:ok, raw}) do
-    {_, host, response} = raw
-    IO.puts("[] #{host}\n--\n#{response}")
+    {_, host, port, response} = raw
+    IO.puts("[] #{host}:#{port}\n--\n#{response}")
   end
 
   def finish({:error, raw}) do
-    {_, host, response} = raw
-    IO.puts("[] #{host}\n--\n#{response}")
+    {_, host, port, response} = raw
+    IO.puts("[] #{host}:#{port}\n--\n#{response}")
   end
 
   def finish({:exit, :timeout}) do
@@ -79,12 +79,12 @@ defmodule Binoculo.CLI do
       :gen_tcp.send(sock, "HEAD / HTTP/1.1\r\nHost: #{host}\r\n\r\n")
     end
 
-    get_response(sock, host)
+    get_response(sock, host, port)
   end
 
-  def get_response(sock, host) do
+  def get_response(sock, host, port) do
     case :gen_tcp.recv(sock, 0) do
-      {:ok, data} -> {:ok, host, data}
+      {:ok, data} -> {:ok, host, port, data}
       {:error, :einval} -> {:error, host, :einval}
     end
   end
