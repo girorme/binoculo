@@ -46,7 +46,7 @@ defmodule Binoculo.CLI do
   def finish({:ok, raw}) do
     case raw do
       {_, host, port, response} -> IO.puts("[] #{host}:#{port}\n--\n#{response}")
-      {:error, host, reason} -> IO.puts("[] #{host}\n--\n#{reason}\n")
+      {_, host, port} -> IO.puts("[] #{host}:#{port}\n--\n")
     end
   end
 
@@ -92,6 +92,7 @@ defmodule Binoculo.CLI do
     case :gen_tcp.recv(sock, 0) do
       {:ok, data} -> {:ok, host, port, data}
       {:error, :einval} -> {:error, host, :einval}
+      {:error, :closed} -> {:error, host, port}
     end
   end
 end
