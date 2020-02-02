@@ -30,17 +30,20 @@ defmodule Binoculo.CLI do
   end
 
   def start_scan(ip, port, threads_value) do
-    if String.match?(ip, @ip_range_re) do
-      Iplist.Ip.range(ip)
+    ip = parse_ip_range_type(ip)
+
+    if ip == false do
+      IO.puts('Invalid ip/range type')
+      System.halt(0)
+    end
+
+    {start, last} = ip
+
+    Iplist.Ip.range(start, last)
       |> Enum.map(&Iplist.Ip.to_string(&1))
       |> Enum.map(fn (ip) -> {ip, port} end)
       |> Task.async_stream(&scan/1, max_concurrency: threads_value, on_timeout: :kill_task)
       |> Enum.map(&finish/1)
-
-      System.halt(0)
-    end
-
-    IO.puts('Invalid ip/range format')
   end
 
   def finish({:ok, raw}) do
@@ -94,5 +97,20 @@ defmodule Binoculo.CLI do
       {:error, :einval} -> {:error, host, :einval}
       {:error, :closed} -> {:error, host, port}
     end
+  end
+
+  def parse_ip_range_type(ip) do
+    cond do
+      String.match?(ip, @ip_cidr_re) ->
+        ip |> CIDR.parse() |> start_last_from_cidr
+      String.match?(ip, @ip_range_re) ->
+        {ip, ip}
+      true ->
+        false
+    end
+  end
+
+  def start_last_from_cidr(%CIDR{first: first, hosts: _, last: last, mask: _}) do
+    {first, last}
   end
 end
