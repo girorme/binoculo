@@ -61,6 +61,7 @@ defmodule Binoculo.CLI do
   def finish({:exit, :timeout}) do
 
   end
+
   def scan(ip_and_port) do
     {host, port} = ip_and_port
     host = to_charlist(host)
