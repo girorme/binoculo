@@ -1,21 +1,39 @@
 # Binoculo
 
-**TODO: Add description**
+**Just another banner grab made in elixir**
 
 ## Installation
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `binoculo` to your list of dependencies in `mix.exs`:
+Get the last binary in the release page or compile from source:
 
-```elixir
-def deps do
-  [
-    {:binoculo, "~> 0.1.0"}
-  ]
-end
+```
+$ git clone https://github.com/girorme/binoculo
+$ mix escript.build
 ```
 
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at [https://hexdocs.pm/binoculo](https://hexdocs.pm/binoculo).
+After `mix escript.build` command a binary is builded in the `bin` folder.
 
+## Usage
+
+Two options are allowed to scan range of ips:
+
+Using cidr:
+- 192.168.0.1/24
+
+Using range:
+- 192.168.0.1..192.168.0.255
+
+Example
+
+```
+$ bin/binoculo --ip 192.168.0.1..192.168.0.2 -p 22
+Binoculo cli
+
+
+[] 192.168.0.1
+--
+SSH-2.0-dropbear_2012.55
+...
+...
+...
+```
