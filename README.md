@@ -4,7 +4,7 @@
 
 ## Installation
 
-Get the last binary in the release page or compile from source:
+Get the last binary in the release page (requires `erlang`) or compile from source (requires `elixir` to use mix):
 
 ```
 $ git clone https://github.com/girorme/binoculo
