@@ -25,3 +25,5 @@ binoculo-*.tar
 /.elixir_ls
 
 /bin
+
+output.txt
