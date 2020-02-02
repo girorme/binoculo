@@ -44,13 +44,15 @@ defmodule Binoculo.CLI do
   end
 
   def finish({:ok, raw}) do
-    {_, host, port, response} = raw
-    IO.puts("[] #{host}:#{port}\n--\n#{response}")
+    case raw do
+      {_, host, port, response} -> IO.puts("[] #{host}:#{port}\n--\n#{response}")
+      {:error, host, reason} -> IO.puts("[] #{host}\n--\n#{reason}\n")
+    end
   end
 
   def finish({:error, raw}) do
     {_, host, port, response} = raw
-    IO.puts("[] #{host}:#{port}\n--\n#{response}")
+    IO.puts("[] #{host}:#{port}\n--\n#{response}\n")
   end
 
   def finish({:exit, :timeout}) do
@@ -72,6 +74,10 @@ defmodule Binoculo.CLI do
 
   def parse_response({:error, reason}) do
     {:error, "Error: #{reason}"}
+  end
+
+  def parse_response({:error, host, reason}) do
+    {:error, "Error: #{host}: #{reason}"}
   end
 
   def connect_and_response(sock, host, port) do
