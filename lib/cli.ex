@@ -30,7 +30,7 @@ defmodule Binoculo.CLI do
   end
 
   def start_scan(ip, port, threads_value) do
-    if String.match?(ip, @ip_cidr_re) or String.match?(ip, @ip_range_re) do
+    if String.match?(ip, @ip_range_re) do
       Iplist.Ip.range(ip)
       |> Enum.map(&Iplist.Ip.to_string(&1))
       |> Enum.map(fn (ip) -> {ip, port} end)
