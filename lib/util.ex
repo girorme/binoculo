@@ -3,7 +3,8 @@ defmodule Binoculo.Util do
   @commands %{
     "--help | -h" => "Show Binoculo usage",
     "--ip" => "CIDR notation/ip_range -> 192.168.0.1/24|192.168.0.1..192.168.0.255",
-    "-p | --port" => "Port to scan"
+    "-p | --port" => "Port to scan",
+    "-t | --threads" => "Number of threads"
   }
 
   def help() do

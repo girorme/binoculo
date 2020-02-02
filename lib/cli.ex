@@ -10,23 +10,31 @@ defmodule Binoculo.CLI do
   def parse_args(args) do
     {params, _, _} = OptionParser.parse(
       args,
-      switches: [help: :boolean, ip: :string, port: :integer],
-      aliases: [h: :help, p: :port]
+      switches: [help: :boolean, ip: :string, port: :integer, threads: :integer],
+      aliases: [h: :help, p: :port, t: :threads]
     )
 
     case params do
       [help: true] -> Binoculo.Util.help()
-      [ip: ip_value, port: port_value] -> start_scan(ip_value, port_value)
+      [
+        ip: ip_value,
+        port: port_value,
+        threads: threads_value
+      ] -> start_scan(ip_value, port_value, threads_value)
+      [
+        ip: ip_value,
+        port: port_value
+      ] -> start_scan(ip_value, port_value, 30)
       _ -> Binoculo.Util.help()
     end
   end
 
-  def start_scan(ip, port) do
+  def start_scan(ip, port, threads_value) do
     if String.match?(ip, @ip_cidr_re) or String.match?(ip, @ip_range_re) do
       Iplist.Ip.range(ip)
       |> Enum.map(&Iplist.Ip.to_string(&1))
       |> Enum.map(fn (ip) -> {ip, port} end)
-      |> Task.async_stream(&scan/1, max_concurrency: 30, on_timeout: :kill_task)
+      |> Task.async_stream(&scan/1, max_concurrency: threads_value, on_timeout: :kill_task)
       |> Enum.map(&finish/1)
 
       System.halt(0)
