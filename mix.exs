@@ -22,7 +22,6 @@ defmodule Binoculo.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:socket, "~> 0.3"},
       {:iplist, "~> 1.0.0"}
     ]
   end
