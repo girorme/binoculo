@@ -15,6 +15,14 @@ After `mix escript.build` command a binary is builded in the `bin` folder.
 
 ## Usage
 
+Parameters
+```
+--help | -h - Show Binoculo usage
+--ip - CIDR notation/ip_range -> 192.168.0.1/24|192.168.0.1..192.168.0.255
+-p | --port - Port to scan
+-t | --threads - Number of threads (Default: 30)
+```
+
 Two options are allowed to scan range of ips:
 
 Using cidr:
