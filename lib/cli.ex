@@ -1,6 +1,9 @@
 defmodule Binoculo.CLI do
+  @ip_cidr_re ~r/^([0-9]{1,3}\.){3}[0-9]{1,3}(\/([0-9]|[1-2][0-9]|3[0-2]))?$/
+  @ip_range_re ~r/^([0-9]{1,3}\.){3}[0-9]{1,3}(\/([0-9]|[1-2][0-9]|3[0-2]))?\.\.([0-9]{1,3}\.){3}[0-9]{1,3}(\/([0-9]|[1-2][0-9]|3[0-2]))?$/
+
   def main(args) do
-    IO.puts("Binoculo cli\n\n")
+    IO.puts("Binoculo cli\n")
     args |> parse_args
   end
 
@@ -19,11 +22,17 @@ defmodule Binoculo.CLI do
   end
 
   def start_scan(ip, port) do
-    Iplist.Ip.range(ip)
-    |> Enum.map(&Iplist.Ip.to_string(&1))
-    |> Enum.map(fn (ip) -> {ip, port} end)
-    |> Task.async_stream(&scan/1, max_concurrency: 30, on_timeout: :kill_task)
-    |> Enum.map(&finish/1)
+    if String.match?(ip, @ip_cidr_re) or String.match?(ip, @ip_range_re) do
+      Iplist.Ip.range(ip)
+      |> Enum.map(&Iplist.Ip.to_string(&1))
+      |> Enum.map(fn (ip) -> {ip, port} end)
+      |> Task.async_stream(&scan/1, max_concurrency: 30, on_timeout: :kill_task)
+      |> Enum.map(&finish/1)
+
+      System.halt(0)
+    end
+
+    IO.puts('Invalid ip/range format')
   end
 
   def finish({:ok, raw}) do
