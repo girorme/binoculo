@@ -45,3 +45,8 @@ SSH-2.0-dropbear_2012.55
 ...
 ...
 ```
+
+## Todo
+- Improve release binaries
+- Add user banner pattern match
+- Add output to file
