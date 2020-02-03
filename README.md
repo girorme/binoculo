@@ -8,6 +8,7 @@ Get the last binary in the release page (requires `erlang`) or compile from sour
 
 ```
 $ git clone https://github.com/girorme/binoculo
+$ mix deps.get
 $ mix escript.build
 ```
 
