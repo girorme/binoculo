@@ -8,6 +8,7 @@ Get the last binary in the release page (requires `erlang`) or compile from sour
 
 ```
 $ git clone https://github.com/girorme/binoculo
+$ mix deps.get
 $ mix escript.build
 ```
 
@@ -45,3 +46,8 @@ SSH-2.0-dropbear_2012.55
 ...
 ...
 ```
+
+## Todo
+- Improve release binaries
+- Add user banner pattern match
+- Add output to file
