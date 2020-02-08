@@ -27,3 +27,5 @@ binoculo-*.tar
 /bin
 
 output.txt
+
+rel/

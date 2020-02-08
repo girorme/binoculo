@@ -1,6 +1,6 @@
 defmodule Binoculo.CLI do
   @ip_cidr_re ~r/^([0-9]{1,3}\.){3}[0-9]{1,3}(\/([0-9]|[1-2][0-9]|3[0-2]))?$/
-  @ip_range_re ~r/^([0-9]{1,3}\.){3}[0-9]{1,3}(\/([0-9]|[1-2][0-9]|3[0-2]))?\.\.([0-9]{1,3}\.){3}[0-9]{1,3}(\/([0-9]|[1-2][0-9]|3[0-2]))?$/
+  @ip_range_re ~r/^(([0-9]{1,3}\.){3}[0-9]{1,3})\.\.(?1)$/
 
   def main(args) do
     IO.puts("Binoculo cli\n")
@@ -105,7 +105,9 @@ defmodule Binoculo.CLI do
       String.match?(ip, @ip_cidr_re) ->
         ip |> CIDR.parse() |> start_last_from_cidr
       String.match?(ip, @ip_range_re) ->
-        {ip, ip}
+        ip
+          |> String.split("..")
+          |> List.to_tuple
       true ->
         false
     end
