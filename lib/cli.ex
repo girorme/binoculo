@@ -16,21 +16,15 @@ defmodule Binoculo.CLI do
 
     case params do
       [help: true] -> Binoculo.Util.help()
-      [
-        ip: ip_value,
-        port: port_value,
-        threads: threads_value
-      ] -> start_scan(ip_value, port_value, threads_value)
-      [
-        ip: ip_value,
-        port: port_value
-      ] -> start_scan(ip_value, port_value, 30)
-      _ -> Binoculo.Util.help()
+      _ -> start_scan(params)
     end
   end
 
-  def start_scan(ip, port, threads_value) do
-    ip = parse_ip_range_type(ip)
+  def start_scan(params) do
+    ip = parse_ip_range_type(params)
+    port = params[:port]
+    threads = params[:threads] || 30
+    head = params[:head] || false
 
     if ip == false do
       IO.puts('Invalid ip/range type')
@@ -41,8 +35,11 @@ defmodule Binoculo.CLI do
 
     Iplist.Ip.range(start, last)
       |> Enum.map(&Iplist.Ip.to_string(&1))
-      |> Enum.map(fn (ip) -> {ip, port} end)
-      |> Task.async_stream(&scan/1, max_concurrency: threads_value, on_timeout: :kill_task)
+      |> Enum.map(fn (ip) -> %{
+          host: {ip, port},
+          head: head
+        } end)
+      |> Task.async_stream(&scan/1, max_concurrency: threads, on_timeout: :kill_task)
       |> Enum.map(&finish/1)
   end
 
@@ -62,13 +59,14 @@ defmodule Binoculo.CLI do
 
   end
 
-  def scan(ip_and_port) do
-    {host, port} = ip_and_port
-    host = to_charlist(host)
-    sock = :gen_tcp.connect(host, port, [:binary, active: false])
+  def scan(scan_params) do
+    %{host: host, head: head} = scan_params
+    {ip, port} = host
+    ip = to_charlist(ip)
+    sock = :gen_tcp.connect(ip, port, [:binary, active: false])
     case parse_response(sock) do
-      {:ok, sock} -> connect_and_response(sock, host, port)
-      {:error, reason} -> {:error, host, reason}
+      {:ok, sock} -> connect_and_response(sock, ip, port, head)
+      {:error, reason} -> {:error, ip, reason}
     end
   end
 
@@ -84,8 +82,8 @@ defmodule Binoculo.CLI do
     {:error, "Error: #{host}: #{reason}"}
   end
 
-  def connect_and_response(sock, host, port) do
-    if port == 80 or port == 443 do
+  def connect_and_response(sock, host, port, head) do
+    if head or port == 80 or port == 443 do
       :gen_tcp.send(sock, "HEAD / HTTP/1.1\r\nHost: #{host}\r\n\r\n")
     end
 
@@ -100,7 +98,8 @@ defmodule Binoculo.CLI do
     end
   end
 
-  def parse_ip_range_type(ip) do
+  def parse_ip_range_type(params) do
+    ip = params[:ip]
     cond do
       String.match?(ip, @ip_cidr_re) ->
         ip |> CIDR.parse() |> start_last_from_cidr

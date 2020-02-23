@@ -4,12 +4,15 @@ defmodule Binoculo.Util do
     "--help | -h" => "Show Binoculo usage",
     "--ip" => "CIDR notation/ip_range -> 192.168.0.1/24|192.168.0.1..192.168.0.255",
     "-p | --port" => "Port to scan",
-    "-t | --threads" => "Number of threads"
+    "--head" => "Send a http HEAD to server",
+    "-t | --threads" => "Number of threads",
   }
 
   def help() do
     IO.puts("\nBinoculo #{@version} - Usage:")
     @commands
     |> Enum.map(fn({command, description}) -> IO.puts("#{command} - #{description}") end)
+
+    IO.puts("\nEx: bin/binoculo --ip \"192.168.0.1/24\" -p 8080 -t 45 --head")
   end
 end
