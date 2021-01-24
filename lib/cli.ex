@@ -16,6 +16,7 @@ defmodule Binoculo.CLI do
 
     case params do
       [help: true] -> Binoculo.Util.help()
+      [] -> Binoculo.Util.help()
       _ -> start_scan(params)
     end
   end

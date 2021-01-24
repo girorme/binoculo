@@ -1,6 +1,6 @@
 %{
-  "cidr": {:hex, :cidr, "1.1.0", "77ab79e3d694d6d315c2e7dea1c66710623488ab7595316d3e2987aebe0def25", [:mix], [], "hexpm"},
-  "earmark": {:hex, :earmark, "1.4.0", "397e750b879df18198afc66505ca87ecf6a96645545585899f6185178433cc09", [:mix], [], "hexpm"},
-  "iplist": {:hex, :iplist, "1.0.2", "bea02d1480b4bbbbecf2c78625cafe01757e6cd4cc7dd8239566728650b8e84d", [:mix], [{:cidr, ">= 0.2.0", [hex: :cidr, repo: "hexpm", optional: false]}, {:earmark, ">= 0.0.0", [hex: :earmark, repo: "hexpm", optional: false]}], "hexpm"},
+  "cidr": {:hex, :cidr, "1.1.0", "77ab79e3d694d6d315c2e7dea1c66710623488ab7595316d3e2987aebe0def25", [:mix], [], "hexpm", "155c26559b27be49a446e13a9e12bf50d62bf9231c548e7743263e75fa61dc91"},
+  "earmark": {:hex, :earmark, "1.4.0", "397e750b879df18198afc66505ca87ecf6a96645545585899f6185178433cc09", [:mix], [], "hexpm", "4bedcec35de03b5f559fd2386be24d08f7637c374d3a85d3fe0911eecdae838a"},
+  "iplist": {:hex, :iplist, "1.0.2", "bea02d1480b4bbbbecf2c78625cafe01757e6cd4cc7dd8239566728650b8e84d", [:mix], [{:cidr, ">= 0.2.0", [hex: :cidr, repo: "hexpm", optional: false]}, {:earmark, ">= 0.0.0", [hex: :earmark, repo: "hexpm", optional: false]}], "hexpm", "fae5b5accc8b7a7618c2d1fbf94607ce6e79ca3b493da6643dbb1bd92be30bd4"},
   "socket": {:hex, :socket, "0.3.13", "98a2ab20ce17f95fb512c5cadddba32b57273e0d2dba2d2e5f976c5969d0c632", [:mix], [], "hexpm"},
 }
