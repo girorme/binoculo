@@ -27,7 +27,7 @@ defmodule Binoculo.CLI do
     threads = params[:threads] || 30
     head = params[:head] || false
 
-    if ip == false do
+    unless ip do
       IO.puts('Invalid ip/range type')
       System.halt(0)
     end
@@ -66,7 +66,7 @@ defmodule Binoculo.CLI do
     ip = to_charlist(ip)
     sock = :gen_tcp.connect(ip, port, [:binary, active: false])
     case parse_response(sock) do
-      {:ok, sock} -> connect_and_response(sock, ip, port, head)
+      {:ok, sock} -> interact(sock, ip, port, head)
       {:error, reason} -> {:error, ip, reason}
     end
   end
@@ -83,7 +83,7 @@ defmodule Binoculo.CLI do
     {:error, "Error: #{host}: #{reason}"}
   end
 
-  def connect_and_response(sock, host, port, head) do
+  def interact(sock, host, port, head) do
     if head or port == 80 or port == 443 do
       :gen_tcp.send(sock, "HEAD / HTTP/1.1\r\nHost: #{host}\r\n\r\n")
     end
