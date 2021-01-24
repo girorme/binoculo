@@ -58,12 +58,12 @@ SSH-2.0-dropbear_2012.55
 - Is also possible to get specific words in response using the  `-r/--read` param
 
 ```
-$ bin/binoculo --ip 177.72.255.184/24 -p 80 --head
+$ bin/binoculo --ip 192.168.0.1/24 -p 80 --head
 ```
 - Using `-r` param
 
 ```
-$ bin/binoculo --ip 177.72.255.184/24 -p 80 --head -r "Apache"
+$ bin/binoculo --ip 192.168.0.1/24 -p 80 --head -r "Apache"
 ```
 
 ## Todo
