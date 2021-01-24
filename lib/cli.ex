@@ -15,12 +15,15 @@ defmodule Binoculo.CLI do
         ip: :string,
         port: :integer,
         threads: :integer,
-        head: :boolean
+        head: :boolean,
+        read: :string,
+        verbose: :boolean
       ],
       aliases: [
         h: :help,
         p: :port,
-        t: :threads
+        t: :threads,
+        r: :read
       ]
     )
 
@@ -36,6 +39,8 @@ defmodule Binoculo.CLI do
     port = params[:port]
     threads = params[:threads] || 30
     head = params[:head] || false
+    word_to_search = params[:read] || false
+    verbose = params[:verbose] || false
 
     unless ip do
       IO.puts('Invalid ip/range type')
@@ -52,6 +57,10 @@ defmodule Binoculo.CLI do
           head: head
         } end)
       |> Task.async_stream(&scan/1, max_concurrency: threads, on_timeout: :kill_task)
+      |> Enum.filter(fn
+        {:ok, {:ok, _, _, raw}} -> if word_to_search, do: String.contains?(raw, word_to_search), else: true
+        _ -> if verbose, do: true, else: false
+      end)
       |> Enum.map(&finish/1)
   end
 
