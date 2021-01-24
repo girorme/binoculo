@@ -6,6 +6,8 @@ defmodule Binoculo.Util do
     "-p | --port" => "Port to scan",
     "--head" => "Send a http HEAD to server",
     "-t | --threads" => "Number of threads",
+    "-r | --read" => "Search for especific word in response",
+    "--verbose" => "Show refused / error connections"
   }
 
   def help() do
