@@ -37,6 +37,8 @@ Using range:
 
 Example
 
+### Simple service banner grab
+
 ```
 $ bin/binoculo --ip 192.168.0.1..192.168.0.2 -p 22
 Binoculo cli
@@ -50,6 +52,19 @@ SSH-2.0-dropbear_2012.55
 ...
 ```
 
+### Grab http services
+
+- With `--head` param is possible to query http services
+- Is also possible to get specific words in response using the  `-r/--read` param
+
+```
+$ bin/binoculo --ip 177.72.255.184/24 -p 80 --head
+```
+- Using `-r` param
+
+```
+$ bin/binoculo --ip 177.72.255.184/24 -p 80 --head -r "Apache"
+```
+
 ## Todo
 - Improve release binaries
-- Add user banner pattern match

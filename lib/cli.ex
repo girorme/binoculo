@@ -10,12 +10,26 @@ defmodule Binoculo.CLI do
   def parse_args(args) do
     {params, _, _} = OptionParser.parse(
       args,
-      switches: [help: :boolean, ip: :string, port: :integer, threads: :integer],
-      aliases: [h: :help, p: :port, t: :threads]
+      switches: [
+        help: :boolean,
+        ip: :string,
+        port: :integer,
+        threads: :integer,
+        head: :boolean,
+        read: :string,
+        verbose: :boolean
+      ],
+      aliases: [
+        h: :help,
+        p: :port,
+        t: :threads,
+        r: :read
+      ]
     )
 
     case params do
       [help: true] -> Binoculo.Util.help()
+      [] -> Binoculo.Util.help()
       _ -> start_scan(params)
     end
   end
@@ -25,8 +39,10 @@ defmodule Binoculo.CLI do
     port = params[:port]
     threads = params[:threads] || 30
     head = params[:head] || false
+    word_to_search = params[:read] || false
+    verbose = params[:verbose] || false
 
-    if ip == false do
+    unless ip do
       IO.puts('Invalid ip/range type')
       System.halt(0)
     end
@@ -36,10 +52,15 @@ defmodule Binoculo.CLI do
     Iplist.Ip.range(start, last)
       |> Enum.map(&Iplist.Ip.to_string(&1))
       |> Enum.map(fn (ip) -> %{
-          host: {ip, port},
+          ip: ip,
+          port: port,
           head: head
         } end)
       |> Task.async_stream(&scan/1, max_concurrency: threads, on_timeout: :kill_task)
+      |> Enum.filter(fn
+        {:ok, {:ok, _, _, raw}} -> if word_to_search, do: String.contains?(raw, word_to_search), else: true
+        _ -> if verbose, do: true, else: false
+      end)
       |> Enum.map(&finish/1)
   end
 
@@ -60,12 +81,11 @@ defmodule Binoculo.CLI do
   end
 
   def scan(scan_params) do
-    %{host: host, head: head} = scan_params
-    {ip, port} = host
+    %{ip: ip, port: port, head: head} = scan_params
     ip = to_charlist(ip)
     sock = :gen_tcp.connect(ip, port, [:binary, active: false])
     case parse_response(sock) do
-      {:ok, sock} -> connect_and_response(sock, ip, port, head)
+      {:ok, sock} -> interact(sock, ip: ip, port: port, head: head)
       {:error, reason} -> {:error, ip, reason}
     end
   end
@@ -82,19 +102,19 @@ defmodule Binoculo.CLI do
     {:error, "Error: #{host}: #{reason}"}
   end
 
-  def connect_and_response(sock, host, port, head) do
-    if head or port == 80 or port == 443 do
-      :gen_tcp.send(sock, "HEAD / HTTP/1.1\r\nHost: #{host}\r\n\r\n")
+  def interact(sock, opts \\ []) do
+    if opts[:head] do
+      :gen_tcp.send(sock, "HEAD / HTTP/1.1\r\nHost: #{opts[:ip]}\r\n\r\n")
     end
 
-    get_response(sock, host, port)
+    get_response(sock, ip: opts[:ip], port: opts[:port])
   end
 
-  def get_response(sock, host, port) do
+  def get_response(sock, opts) do
     case :gen_tcp.recv(sock, 0) do
-      {:ok, data} -> {:ok, host, port, data}
-      {:error, :einval} -> {:error, host, :einval}
-      {:error, :closed} -> {:error, host, port}
+      {:ok, data} -> {:ok, opts[:ip], opts[:port], data}
+      {:error, :einval} -> {:error, opts[:ip], :einval}
+      {:error, :closed} -> {:error, opts[:ip], opts[:port]}
     end
   end
 

@@ -5,7 +5,7 @@ defmodule Binoculo.MixProject do
     [
       app: :binoculo,
       version: "0.1.0",
-      elixir: "~> 1.9",
+      elixir: "~> 1.11",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       escript: escript()
@@ -15,7 +15,7 @@ defmodule Binoculo.MixProject do
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
-      extra_applications: [:logger]
+      extra_applications: [:logger, :cidr]
     ]
   end
 
