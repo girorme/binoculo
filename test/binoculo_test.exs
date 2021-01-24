@@ -1,8 +1,9 @@
 defmodule BinoculoTest do
   use ExUnit.Case
-  doctest Binoculo
+  doctest Binoculo.CLI
+  alias Binoculo.CLI, as: BinoculoClI
 
-  test "greets the world" do
-    assert Binoculo.hello() == :world
+  test "No args" do
+    assert BinoculoClI.main([]) == Binoculo.Util.help()
   end
 end
