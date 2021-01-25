@@ -1,10 +1,15 @@
 defmodule Binoculo.CLI do
+  use Bakeware.Script
+
   @ip_cidr_re ~r/^([0-9]{1,3}\.){3}[0-9]{1,3}(\/([0-9]|[1-2][0-9]|3[0-2]))?$/
   @ip_range_re ~r/^(([0-9]{1,3}\.){3}[0-9]{1,3})\.\.(?1)$/
 
+  @impl Bakeware.Script
   def main(args) do
     IO.puts("Binoculo cli\n")
     args |> parse_args
+
+    0
   end
 
   def parse_args(args) do

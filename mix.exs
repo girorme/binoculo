@@ -4,25 +4,34 @@ defmodule Binoculo.MixProject do
   def project do
     [
       app: :binoculo,
-      version: "0.1.0",
+      version: "1.0.0",
       elixir: "~> 1.11",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
-      escript: escript()
+      escript: escript(),
+      releases: [
+        binoculo: [
+          steps: [:assemble, &Bakeware.assemble/1],
+          strip_beams: Mix.env() == :prod,
+          overwrite: true
+        ]
+      ]
     ]
   end
 
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
-      extra_applications: [:logger, :cidr]
+      extra_applications: [:logger, :cidr],
+      mod: {Binoculo.CLI, []}
     ]
   end
 
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:iplist, "~> 1.0.0"}
+      {:iplist, "~> 1.0.0"},
+      {:bakeware, path: "../bakeware", runtime: false}
     ]
   end
 
