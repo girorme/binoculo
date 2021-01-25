@@ -56,8 +56,11 @@ defmodule Binoculo.CLI do
           port: port,
           head: head
         } end)
-      |> Task.async_stream(&scan/1, max_concurrency: threads, on_timeout: :kill_task)
-      |> Enum.filter(fn
+      |> Task.async_stream(
+        &scan/1,
+        max_concurrency: threads,
+        timeout: :infinity
+        ) |> Enum.filter(fn
         {:ok, {:ok, _, _, raw}} -> if word_to_search, do: String.contains?(raw, word_to_search), else: true
         _ -> if verbose, do: true, else: false
       end)
@@ -77,7 +80,6 @@ defmodule Binoculo.CLI do
   end
 
   def finish({:exit, :timeout}) do
-
   end
 
   def scan(scan_params) do
