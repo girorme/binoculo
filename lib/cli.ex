@@ -8,24 +8,25 @@ defmodule Binoculo.CLI do
   end
 
   def parse_args(args) do
-    {params, _, _} = OptionParser.parse(
-      args,
-      switches: [
-        help: :boolean,
-        ip: :string,
-        port: :integer,
-        threads: :integer,
-        head: :boolean,
-        read: :string,
-        verbose: :boolean
-      ],
-      aliases: [
-        h: :help,
-        p: :port,
-        t: :threads,
-        r: :read
-      ]
-    )
+    {params, _, _} =
+      OptionParser.parse(
+        args,
+        switches: [
+          help: :boolean,
+          ip: :string,
+          port: :integer,
+          threads: :integer,
+          head: :boolean,
+          read: :string,
+          verbose: :boolean
+        ],
+        aliases: [
+          h: :help,
+          p: :port,
+          t: :threads,
+          r: :read
+        ]
+      )
 
     case params do
       [help: true] -> Binoculo.Util.help()
@@ -50,21 +51,27 @@ defmodule Binoculo.CLI do
     {start, last} = ip
 
     Iplist.Ip.range(start, last)
-      |> Enum.map(&Iplist.Ip.to_string(&1))
-      |> Enum.map(fn (ip) -> %{
-          ip: ip,
-          port: port,
-          head: head
-        } end)
-      |> Task.async_stream(
-        &scan/1,
-        max_concurrency: threads,
-        timeout: :infinity
-        ) |> Enum.filter(fn
-        {:ok, {:ok, _, _, raw}} -> if word_to_search, do: String.contains?(raw, word_to_search), else: true
-        _ -> if verbose, do: true, else: false
-      end)
-      |> Enum.map(&finish/1)
+    |> Enum.map(&Iplist.Ip.to_string(&1))
+    |> Enum.map(fn ip ->
+      %{
+        ip: ip,
+        port: port,
+        head: head
+      }
+    end)
+    |> Task.async_stream(
+      &scan/1,
+      max_concurrency: threads,
+      timeout: :infinity
+    )
+    |> Enum.filter(fn
+      {:ok, {:ok, _, _, raw}} ->
+        if word_to_search, do: String.contains?(raw, word_to_search), else: true
+
+      _ ->
+        if verbose, do: true, else: false
+    end)
+    |> Enum.map(&finish/1)
   end
 
   def finish({:ok, raw}) do
@@ -86,6 +93,7 @@ defmodule Binoculo.CLI do
     %{ip: ip, port: port, head: head} = scan_params
     ip = to_charlist(ip)
     sock = :gen_tcp.connect(ip, port, [:binary, active: false])
+
     case parse_response(sock) do
       {:ok, sock} -> interact(sock, ip: ip, port: port, head: head)
       {:error, reason} -> {:error, ip, reason}
@@ -122,13 +130,16 @@ defmodule Binoculo.CLI do
 
   def parse_ip_range_type(params) do
     ip = params[:ip]
+
     cond do
       String.match?(ip, @ip_cidr_re) ->
         ip |> CIDR.parse() |> start_last_from_cidr
+
       String.match?(ip, @ip_range_re) ->
         ip
-          |> String.split("..")
-          |> List.to_tuple
+        |> String.split("..")
+        |> List.to_tuple()
+
       true ->
         false
     end

@@ -12,8 +12,9 @@ defmodule Binoculo.Util do
 
   def help() do
     IO.puts("\nBinoculo #{@version} - Usage:")
+
     @commands
-    |> Enum.map(fn({command, description}) -> IO.puts("#{command} - #{description}") end)
+    |> Enum.map(fn {command, description} -> IO.puts("#{command} - #{description}") end)
 
     IO.puts("\nEx: bin/binoculo --ip \"192.168.0.1/24\" -p 8080 -t 45 --head")
   end
