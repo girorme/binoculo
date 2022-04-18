@@ -68,3 +68,5 @@ $ bin/binoculo --ip 192.168.0.1/24 -p 80 --head -r "Apache"
 
 ## Todo
 - Improve release binaries
+- Update arguments info
+- 

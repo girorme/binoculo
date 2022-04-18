@@ -51,7 +51,7 @@ defmodule Binoculo.CLI do
     {start, last} = ip
 
     Iplist.Ip.range(start, last)
-    |> Enum.map(&Iplist.Ip.to_string(&1))
+    |> Enum.map(&Iplist.Ip.to_string/1)
     |> Enum.map(fn ip ->
       %{
         ip: ip,
@@ -74,25 +74,26 @@ defmodule Binoculo.CLI do
     |> Enum.map(&finish/1)
   end
 
-  def finish({:ok, raw}) do
+  defp finish({:ok, raw}) do
     case raw do
       {_, host, port, response} -> IO.puts("[] #{host}:#{port}\n--\n#{response}")
       {_, host, port} -> IO.puts("[] #{host}:#{port}\n--\n")
     end
   end
 
-  def finish({:error, raw}) do
+  defp finish({:error, raw}) do
     {_, host, port, response} = raw
     IO.puts("[] #{host}:#{port}\n--\n#{response}\n")
   end
 
-  def finish({:exit, :timeout}) do
+  defp finish({:exit, :timeout}) do
   end
 
-  def scan(scan_params) do
-    %{ip: ip, port: port, head: head} = scan_params
+  defp scan(%{ip: ip, port: port, head: head}) do
+    IO.puts("[] Scanning ip: #{ip} - port: #{port}]")
+
     ip = to_charlist(ip)
-    sock = :gen_tcp.connect(ip, port, [:binary, active: false])
+    sock = :gen_tcp.connect(ip, port, [active: false], :timer.seconds(5))
 
     case parse_response(sock) do
       {:ok, sock} -> interact(sock, ip: ip, port: port, head: head)
@@ -100,35 +101,36 @@ defmodule Binoculo.CLI do
     end
   end
 
-  def parse_response({:ok, sock}) do
+  defp parse_response({:ok, sock}) do
     {:ok, sock}
   end
 
-  def parse_response({:error, reason}) do
+  defp parse_response({:error, reason}) do
     {:error, "Error: #{reason}"}
   end
 
-  def parse_response({:error, host, reason}) do
-    {:error, "Error: #{host}: #{reason}"}
-  end
+  defp interact(sock, opts) do
 
-  def interact(sock, opts \\ []) do
-    if opts[:head] do
-      :gen_tcp.send(sock, "HEAD / HTTP/1.1\r\nHost: #{opts[:ip]}\r\n\r\n")
+    payload = case opts[:head] do
+      true -> http_head_payload(opts[:ip])
+      _ -> "binoculo\r\n"
     end
 
+    :gen_tcp.send(sock, payload)
     get_response(sock, ip: opts[:ip], port: opts[:port])
   end
 
-  def get_response(sock, opts) do
+  defp get_response(sock, opts) do
+    #response = :gen_tcp.recv(sock, 0)
+
     case :gen_tcp.recv(sock, 0) do
-      {:ok, data} -> {:ok, opts[:ip], opts[:port], data}
-      {:error, :einval} -> {:error, opts[:ip], :einval}
-      {:error, :closed} -> {:error, opts[:ip], opts[:port]}
+     {:ok, data} -> {:ok, opts[:ip], opts[:port], data}
+     {:error, :einval} -> {:error, opts[:ip], opts[:port], :einval}
+     {:error, :closed} -> {:error, opts[:ip], opts[:port], :closed}
     end
   end
 
-  def parse_ip_range_type(params) do
+  defp parse_ip_range_type(params) do
     ip = params[:ip]
 
     cond do
@@ -145,7 +147,9 @@ defmodule Binoculo.CLI do
     end
   end
 
-  def start_last_from_cidr(%CIDR{first: first, hosts: _, last: last, mask: _}) do
+  defp start_last_from_cidr(%CIDR{first: first, hosts: _, last: last, mask: _}) do
     {first, last}
   end
+
+  defp http_head_payload(ip), do: "HEAD / HTTP/1.1\r\nHost: #{ip}\r\n\r\n"
 end
