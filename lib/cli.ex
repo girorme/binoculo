@@ -36,17 +36,18 @@ defmodule Binoculo.CLI do
   end
 
   def start_scan(params) do
-    ip = parse_ip_range_type(params)
+
+    unless params[:ip] do
+      IO.puts('Invalid ip/range type')
+      System.halt(0)
+    end
+
+    ip = parse_ip_range_type(params[:ip])
     port = params[:port]
     threads = params[:threads] || 30
     head = params[:head] || false
     word_to_search = params[:read] || false
     verbose = params[:verbose] || false
-
-    unless ip do
-      IO.puts('Invalid ip/range type')
-      System.halt(0)
-    end
 
     {start, last} = ip
 
@@ -66,13 +67,24 @@ defmodule Binoculo.CLI do
     )
     |> Enum.filter(fn
       {:ok, {:ok, _, _, raw}} ->
-        if word_to_search, do: String.contains?(raw, word_to_search), else: true
+        handle_response(raw, word_to_search)
 
       _ ->
-        if verbose, do: true, else: false
+        case verbose do
+          true -> true
+          _ -> false
+        end
     end)
     |> Enum.map(&finish/1)
   end
+
+  defp handle_response(raw, search) when is_binary(search) do
+    raw
+    |> to_string
+    |> String.contains?(search)
+  end
+
+  defp handle_response(_raw, _), do: true
 
   defp finish({:ok, raw}) do
     case raw do
@@ -81,8 +93,7 @@ defmodule Binoculo.CLI do
     end
   end
 
-  defp finish({:error, raw}) do
-    {_, host, port, response} = raw
+  defp finish({:error, {_, host, port, response}}) do
     IO.puts("[] #{host}:#{port}\n--\n#{response}\n")
   end
 
@@ -110,29 +121,22 @@ defmodule Binoculo.CLI do
   end
 
   defp interact(sock, opts) do
-
-    payload = case opts[:head] do
-      true -> http_head_payload(opts[:ip])
-      _ -> "binoculo\r\n"
-    end
+    payload =
+      case opts[:head] do
+        true -> http_head_payload(opts[:ip])
+        _ -> "binoculo\r\n"
+      end
 
     :gen_tcp.send(sock, payload)
-    get_response(sock, ip: opts[:ip], port: opts[:port])
-  end
-
-  defp get_response(sock, opts) do
-    #response = :gen_tcp.recv(sock, 0)
 
     case :gen_tcp.recv(sock, 0) do
-     {:ok, data} -> {:ok, opts[:ip], opts[:port], data}
-     {:error, :einval} -> {:error, opts[:ip], opts[:port], :einval}
-     {:error, :closed} -> {:error, opts[:ip], opts[:port], :closed}
+      {:ok, data} -> {:ok, opts[:ip], opts[:port], data}
+      {:error, :einval} -> {:error, opts[:ip], opts[:port], :einval}
+      {:error, :closed} -> {:error, opts[:ip], opts[:port], :closed}
     end
   end
 
-  defp parse_ip_range_type(params) do
-    ip = params[:ip]
-
+  defp parse_ip_range_type(ip) do
     cond do
       String.match?(ip, @ip_cidr_re) ->
         ip |> CIDR.parse() |> start_last_from_cidr
@@ -147,9 +151,7 @@ defmodule Binoculo.CLI do
     end
   end
 
-  defp start_last_from_cidr(%CIDR{first: first, hosts: _, last: last, mask: _}) do
-    {first, last}
-  end
+  defp start_last_from_cidr(%CIDR{first: first, last: last}), do: {first, last}
 
   defp http_head_payload(ip), do: "HEAD / HTTP/1.1\r\nHost: #{ip}\r\n\r\n"
 end
