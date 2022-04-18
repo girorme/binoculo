@@ -4,6 +4,7 @@ defmodule Binoculo.CLI do
 
   def main(args) do
     IO.puts("Binoculo cli\n")
+    IO.puts("Wait the responses after the initial scanning...")
     args |> parse_args
   end
 
@@ -36,7 +37,6 @@ defmodule Binoculo.CLI do
   end
 
   def start_scan(params) do
-
     unless params[:ip] do
       IO.puts('Invalid ip/range type')
       System.halt(0)
@@ -51,20 +51,25 @@ defmodule Binoculo.CLI do
 
     {start, last} = ip
 
-    Iplist.Ip.range(start, last)
-    |> Enum.map(&Iplist.Ip.to_string/1)
-    |> Enum.map(fn ip ->
-      %{
-        ip: ip,
-        port: port,
-        head: head
-      }
-    end)
-    |> Task.async_stream(
-      &scan/1,
-      max_concurrency: threads,
-      timeout: :infinity
-    )
+    finished_jobs =
+      Iplist.Ip.range(start, last)
+      |> Enum.map(&Iplist.Ip.to_string/1)
+      |> Enum.map(fn ip ->
+        %{
+          ip: ip,
+          port: port,
+          head: head
+        }
+      end)
+      |> Task.async_stream(
+        &scan/1,
+        max_concurrency: threads,
+        timeout: :infinity
+      )
+
+    IO.puts("[+] Collecting results from scanned hosts")
+
+    finished_jobs
     |> Enum.filter(fn
       {:ok, {:ok, _, _, raw}} ->
         handle_response(raw, word_to_search)
@@ -124,7 +129,7 @@ defmodule Binoculo.CLI do
     payload =
       case opts[:head] do
         true -> http_head_payload(opts[:ip])
-        _ -> "binoculo\r\n"
+        _ -> ""
       end
 
     :gen_tcp.send(sock, payload)
