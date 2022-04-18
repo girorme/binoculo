@@ -4,7 +4,7 @@ defmodule Binoculo.CLI do
 
   def main(args) do
     IO.puts("Binoculo cli\n")
-    IO.puts("Wait the responses after the initial scanning...")
+    IO.puts("Wait the responses after initial scanning...")
     args |> parse_args
   end
 
