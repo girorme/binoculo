@@ -12,9 +12,15 @@ defmodule BinoculoDaemon.Worker do
     with {:ok, socket} <- estabilish_connection(host, port),
          {:ok, socket} <- send_payload(socket, host, port),
          {:ok, response} <- recv_response(socket) do
-      {:ok, to_string(response)}
+      {:ok, %{host: host, port: port, response: to_string(response)}}
     else
-      {:error, reason} -> {:error, "Error returning banner... socket response: #{reason}"}
+      {:error, reason} ->
+        {:error,
+         %{
+           host: host,
+           port: port,
+           response: "Error returning banner... socket response: #{reason}"
+         }}
     end
   end
 
