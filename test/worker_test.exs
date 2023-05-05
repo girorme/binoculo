@@ -14,17 +14,36 @@ defmodule WorkerTest do
 
   describe "Testing the banner grab function" do
     test "get banner passing ip + port" do
-      {:ok, response} = Worker.get_banner("127.0.0.1", 21_210)
+      host_ut = "127.0.0.1"
+      port_ut = 21_210
+      {:ok, %{response: response, host: host, port: port}} = Worker.get_banner(host_ut, port_ut)
+
+      assert host_ut == host
+      assert port_ut == port
       assert response =~ ~r/ftp/i
     end
 
     test "get error and reason when port is not open in host" do
-      {:error, response} = Worker.get_banner("127.0.0.1", 9999)
+      host_ut = "127.0.0.1"
+      port_ut = 9999
+
+      {:error, %{response: response, host: host, port: port}} =
+        Worker.get_banner(host_ut, port_ut)
+
+      assert host_ut == host
+      assert port_ut == port
       assert response =~ ~r/Error returning banner/i
     end
 
     test "get error and reason when host is not reachable" do
-      {:error, response} = Worker.get_banner("1.1.1.1", 9999)
+      host_ut = "1.1.1.1"
+      port_ut = 9999
+
+      {:error, %{response: response, host: host, port: port}} =
+        Worker.get_banner(host_ut, port_ut)
+
+      assert host_ut == host
+      assert port_ut == port
       assert response =~ ~r/Error returning banner/i
     end
   end
