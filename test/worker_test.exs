@@ -7,20 +7,29 @@ defmodule WorkerTest do
   alias BinoculoDaemon.Worker
   alias BinoculoDaemon.Stub.Server
 
-  setup_all do
-    spawn(Server, :start, [21_210])
-    :ok
-  end
-
   describe "Testing the banner grab function" do
     test "get banner passing ip + port" do
       host_ut = "127.0.0.1"
       port_ut = 21_210
+      port_ut_http = 8080
+
+      ftp_pid = spawn(Server, :start, [port_ut, "ftp server"])
+      Process.sleep(:timer.seconds(1))
+
       {:ok, %{response: response, host: host, port: port}} = Worker.get_banner(host_ut, port_ut)
 
       assert host_ut == host
       assert port_ut == port
       assert response =~ ~r/ftp/i
+
+      Process.exit(ftp_pid, :kill)
+      spawn(Server, :start, [port_ut_http, "http server"])
+      Process.sleep(:timer.seconds(1))
+
+      {:ok, %{response: response, port: port}} = Worker.get_banner(host_ut, port_ut_http)
+
+      assert port_ut_http == port
+      assert response =~ ~r/http/i
     end
 
     test "get error and reason when port is not open in host" do

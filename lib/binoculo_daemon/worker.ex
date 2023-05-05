@@ -26,7 +26,7 @@ defmodule BinoculoDaemon.Worker do
 
   @spec get_service_type_by_port!(port :: host_port()) :: atom()
   defp get_service_type_by_port!(port) do
-    case port in [80, 443] do
+    case port in [8080, 80, 443] do
       true -> :http
       _ -> :tcp
     end

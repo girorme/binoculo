@@ -3,7 +3,7 @@ defmodule BinoculoDaemon.Stub.Server do
   Module used to stub a server connection in tests
   """
 
-  def start(port) do
+  def start(port, expected_banner) do
     {:ok, socket} =
       :gen_tcp.listen(port, [
         :binary,
@@ -13,51 +13,17 @@ defmodule BinoculoDaemon.Stub.Server do
         {:ip, {0, 0, 0, 0}}
       ])
 
-    loop_accept(socket)
+    loop_accept(socket, expected_banner)
   end
 
-  @spec loop_accept(port | {:"$inet", atom, any}) :: no_return
-  def loop_accept(socket) do
+  def loop_accept(socket, expected_banner) do
     {:ok, client} = :gen_tcp.accept(socket)
-    spawn(fn -> handle_client(client) end)
-    loop_accept(socket)
+    spawn(fn -> handle_client(client, expected_banner) end)
+    loop_accept(socket, expected_banner)
   end
 
-  def handle_client(socket) do
-    send_response(socket, "220 FTP Server ready.\r\n")
-    loop_receive_commands(socket)
-  end
-
-  def loop_receive_commands(socket) do
-    case :gen_tcp.recv(socket, 0) do
-      {:ok, data} ->
-        handle_command(socket, String.trim(data))
-        loop_receive_commands(socket)
-
-      {:error, :closed} ->
-        :ok
-
-      {:error, reason} ->
-        IO.puts("Socket error: #{reason}")
-        :ok
-    end
-  end
-
-  def handle_command(socket, command) do
-    case String.upcase(command) do
-      "USER" ->
-        send_response(socket, "331 Username OK, need password.\r\n")
-
-      "PASS" ->
-        send_response(socket, "230 Password OK.\r\n")
-
-      "QUIT" ->
-        send_response(socket, "221 Goodbye.\r\n")
-        :gen_tcp.close(socket)
-
-      _ ->
-        send_response(socket, "502 Command not implemented.\r\n")
-    end
+  def handle_client(socket, expected_banner) do
+    send_response(socket, expected_banner)
   end
 
   def send_response(socket, message) do
