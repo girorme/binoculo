@@ -1,4 +1,8 @@
 defmodule BinoculoDaemon.Results do
+  @moduledoc """
+  Store workers results
+  """
+
   @table_name :worker_control
   @running_key :worker_in_progress
   @finished_key :worker_finished
@@ -33,21 +37,26 @@ defmodule BinoculoDaemon.Results do
     :ok
   end
 
-  def remove_item(item) do
-    running_updated =
-      get_running()
-      |> Enum.filter(fn %{host: host} -> host != item.host end)
-
-    :ets.insert(@table_name, {@running_key, running_updated})
-    :ets.update_counter(@table_name, @qty_running_key, -1)
-
+  def finish_item(item) do
+    remove_item(item)
     finished_updated = [item | get_finished()]
-
     :ets.insert(@table_name, {@finished_key, finished_updated})
   end
 
+  def remove_item(item) do
+    running_updated =
+      get_running()
+      |> Enum.filter(fn %{host: host} -> host != item[:host] end)
+
+    :ets.insert(@table_name, {@running_key, running_updated})
+    :ets.update_counter(@table_name, @qty_running_key, -1)
+  end
+
   def get_state() do
-    :ets.select(@table_name, (for key <- [@running_key, @finished_key, @qty_running_key], do: {{key, :_}, [], [:"$_"]}))
+    :ets.select(
+      @table_name,
+      for(key <- [@running_key, @finished_key, @qty_running_key], do: {{key, :_}, [], [:"$_"]})
+    )
   end
 
   def get_running() do

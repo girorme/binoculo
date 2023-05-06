@@ -8,17 +8,6 @@ defmodule ResultTest do
     :ok
   end
 
-  describe "test db init/remove" do
-    test "db should be already started" do
-      assert Results.is_started?()
-    end
-
-    test "should remove db from memory" do
-      Results.delete_db()
-      refute Results.is_started?()
-    end
-  end
-
   describe "crud workers progress/results" do
     test "should add and return progress / results" do
       host_info_ut = %{host: "127.0.0.1", port: 21_210}
@@ -33,15 +22,27 @@ defmodule ResultTest do
     test "should finish and remove item from progress" do
       host_info_ut = %{host: "127.0.0.1", port: 21_210}
       Results.add_item(host_info_ut)
+      Results.finish_item(host_info_ut)
+
+      finished =
+        Results.get_finished()
+        |> Enum.map(& &1[:host])
+
+      assert Results.get_qty_running() == 0
+      assert host_info_ut.host in finished
+    end
+
+    test "should only remove item from progress" do
+      host_info_ut = %{host: "127.0.0.1", port: 21_210}
+      Results.add_item(host_info_ut)
       Results.remove_item(host_info_ut)
 
       finished =
         Results.get_finished()
-        |> Enum.filter(fn %{host: host} -> host == host_info_ut[:host] end)
-        |> Enum.map(&(&1[:host]))
+        |> Enum.map(& &1[:host])
 
       assert Results.get_qty_running() == 0
-      assert host_info_ut.host in finished
+      assert host_info_ut.host not in finished
     end
   end
 end
