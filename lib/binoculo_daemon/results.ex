@@ -12,6 +12,15 @@ defmodule BinoculoDaemon.Results do
     :ets.insert(@table_name, {@qty_running_key, 0})
   end
 
+  def delete_db(), do: :ets.delete(@table_name)
+
+  def is_started?() do
+    case :ets.info(@table_name) do
+      :undefined -> false
+      _ -> true
+    end
+  end
+
   @spec add_item(any) :: atom()
   def add_item(item) do
     in_progress =
@@ -22,6 +31,19 @@ defmodule BinoculoDaemon.Results do
     :ets.insert(@table_name, {@running_key, in_progress})
     :ets.update_counter(@table_name, @qty_running_key, 1)
     :ok
+  end
+
+  def remove_item(item) do
+    running_updated =
+      get_running()
+      |> Enum.filter(fn %{host: host} -> host != item.host end)
+
+    :ets.insert(@table_name, {@running_key, running_updated})
+    :ets.update_counter(@table_name, @qty_running_key, -1)
+
+    finished_updated = [item | get_finished()]
+
+    :ets.insert(@table_name, {@finished_key, finished_updated})
   end
 
   def get_state() do
