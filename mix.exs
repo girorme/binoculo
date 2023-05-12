@@ -25,7 +25,8 @@ defmodule BinoculoDaemon.MixProject do
     [
       {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
       {:net_address, "~> 0.2.0"},
-      {:mox, "~> 1.0", only: :test}
+      {:mox, "~> 1.0", only: :test},
+      {:meilisearch, "~> 0.20.0"}
     ]
   end
 end
