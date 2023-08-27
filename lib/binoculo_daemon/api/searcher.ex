@@ -3,11 +3,12 @@ defmodule BinoculoDaemon.Api.Searcher do
   Api to searchers (elasticsearh, meilisearch, etc)
   """
   @type index() :: String.t()
-  @type payload() :: map()
-  @type options() :: map()
+  @type payload() :: term()
+  @type options() :: map() | keyword()
+  @type default_response() :: any()
 
-  @callback create_index(index(), options()) :: {atom(), any()}
-  @callback delete_index(index(), options()) :: {atom(), any()}
-  @callback save(index(), payload()) :: {atom(), any()}
-  @callback search(index(), payload()) :: {atom(), any()}
+  @callback create_index(options()) :: default_response()
+  @callback delete_index(options()) :: default_response()
+  @callback save(payload()) :: default_response()
+  @callback search(payload(), options()) :: default_response()
 end

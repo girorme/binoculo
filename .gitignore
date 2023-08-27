@@ -24,3 +24,5 @@ binoculo_daemon-*.tar
 
 # Temporary files, for example, from tests.
 /tmp/
+
+meili_data

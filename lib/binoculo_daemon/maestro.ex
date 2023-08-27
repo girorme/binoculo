@@ -5,6 +5,7 @@ defmodule BinoculoDaemon.Maestro do
   use GenServer
 
   require Logger
+  alias BinoculoDaemon.Msearch
   alias BinoculoDaemon.{Results, Worker, Util}
 
   def start_get_banner_workers(host_notation, port) do
@@ -46,9 +47,16 @@ defmodule BinoculoDaemon.Maestro do
   end
 
   def handle_info({_ref, {status, host_info}}, state) do
+    host_info =
+      Map.put(
+        host_info,
+        :id,
+        :crypto.hash(:md5, "#{host_info.host} <> #{host_info.port}") |> Base.encode16()
+      )
+
     case status do
-      :ok -> Results.finish_item(host_info)
-      :error -> Results.remove_item(host_info)
+      :ok -> finish_item(host_info)
+      :error -> remove_item(host_info)
     end
 
     {:noreply, state}
@@ -56,5 +64,22 @@ defmodule BinoculoDaemon.Maestro do
 
   def handle_info(_msg, state) do
     {:noreply, state}
+  end
+
+  def finish_item(host_info) do
+    Results.finish_item(host_info)
+
+    case Msearch.save(host_info) do
+      {:ok, _response} -> :ok
+      {:error, response} -> Logger.info("[#{host_info.host}:#{host_info.port}] Error saving result to msearch: #{response}")
+      {:error, _, response} -> Logger.info("[#{host_info.host}:#{host_info.port}] Error saving result to msearch: #{response}")
+    end
+
+    :ok
+  end
+
+  def remove_item(host_info) do
+    Results.remove_item(host_info)
+    :ok
   end
 end
