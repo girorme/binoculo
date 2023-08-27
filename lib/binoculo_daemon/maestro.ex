@@ -69,6 +69,19 @@ defmodule BinoculoDaemon.Maestro do
   def finish_item(host_info) do
     Results.finish_item(host_info)
 
+    host_info =
+      if host_info[:port] in Util.get_possible_http_ports() do
+        http_response = Util.format_http_response(host_info[:response])
+
+        Map.put(
+          host_info,
+          :http_response,
+          http_response
+        )
+      else
+        host_info
+      end
+
     case Msearch.save(host_info) do
       {:ok, _response} ->
         :ok

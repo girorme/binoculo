@@ -24,4 +24,23 @@ defmodule BinoculoDaemon.Util do
         {:error, "invalid_format"}
     end
   end
+
+  def format_http_response(http_response) do
+    [header, _body] = String.split(http_response, "\r\n\r\n")
+    [http_code | key_value] = String.split(header, "\r\n")
+
+    resp =
+      for session <- key_value, into: %{} do
+        [key, value] = String.split(session, ": ")
+        {key, value}
+      end
+
+    Map.put(
+      resp,
+      "Code",
+      http_code
+    )
+  end
+
+  def get_possible_http_ports(), do: [8080, 80, 443]
 end
