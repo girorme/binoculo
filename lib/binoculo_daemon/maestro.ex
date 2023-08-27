@@ -70,9 +70,18 @@ defmodule BinoculoDaemon.Maestro do
     Results.finish_item(host_info)
 
     case Msearch.save(host_info) do
-      {:ok, _response} -> :ok
-      {:error, response} -> Logger.info("[#{host_info.host}:#{host_info.port}] Error saving result to msearch: #{response}")
-      {:error, _, response} -> Logger.info("[#{host_info.host}:#{host_info.port}] Error saving result to msearch: #{response}")
+      {:ok, _response} ->
+        :ok
+
+      {:error, response} ->
+        Logger.info(
+          "[#{host_info.host}:#{host_info.port}] Error saving result to msearch: #{response}"
+        )
+
+      {:error, _, response} ->
+        Logger.info(
+          "[#{host_info.host}:#{host_info.port}] Error saving result to msearch: #{response}"
+        )
     end
 
     :ok

@@ -1,5 +1,4 @@
 defmodule BinoculoDaemon.Msearch do
-
   @index "hosts"
 
   def create_index(_options) do
