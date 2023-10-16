@@ -88,12 +88,7 @@ defmodule BinoculoDaemon.Maestro do
 
       {:error, response} ->
         Logger.info(
-          "[#{host_info.host}:#{host_info.port}] Error saving result to msearch: #{response}"
-        )
-
-      {:error, _, response} ->
-        Logger.info(
-          "[#{host_info.host}:#{host_info.port}] Error saving result to msearch: #{response}"
+          "[#{host_info['host']}:#{host_info['port']}] Error saving result to msearch: #{response}"
         )
     end
 

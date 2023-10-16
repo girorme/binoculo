@@ -9,12 +9,10 @@ defmodule BinoculoDaemon.Msearch do
     Meilisearch.Indexes.delete(@index)
   end
 
-  @spec save(list) :: {:error, any} | {:ok, any}
   def save(payload) do
     case Meilisearch.Documents.add_or_replace(@index, payload) do
       {:ok, response} -> {:ok, response}
-      {:error, response} -> {:error, response}
-      {:error, _, response} -> {:error, response}
+      {:error, _code, response} -> {:error, response}
     end
   end
 
