@@ -30,7 +30,7 @@ $ docker run -d -it --rm -p 7700:7700  -v $(pwd)/meili_data:/meili_data getmeili
 
 2. Run some scan
 ```
-$ ./binoculo -r 15.197.142.173/20 -p 22
+$ ./binoculo -r 192.168.1.0/20 -p 22
 ```
 
 3. Access meilisearch to see results on `http://localhost:7700/`
