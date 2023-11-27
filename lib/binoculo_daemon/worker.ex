@@ -56,5 +56,5 @@ defmodule BinoculoDaemon.Worker do
     end
   end
 
-  defp recv_response(socket), do: :gen_tcp.recv(socket, 0)
+  defp recv_response(socket), do: :gen_tcp.recv(socket, 0, :timer.seconds(2))
 end

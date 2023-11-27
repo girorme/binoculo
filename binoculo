@@ -1,0 +1,3 @@
+#!/bin/bash
+
+mix escript.build && PROD=true ./bin/binoculo $@

@@ -8,7 +8,15 @@ defmodule BinoculoDaemon.MixProject do
       elixir: "~> 1.14",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
-      test_coverage: [ignore_modules: [BinoculoDaemon]]
+      test_coverage: [ignore_modules: [BinoculoDaemon]],
+      escript: escript()
+    ]
+  end
+
+  def escript do
+    [
+      main_module: BinoculoDaemon,
+      path: "bin/binoculo"
     ]
   end
 
@@ -27,7 +35,9 @@ defmodule BinoculoDaemon.MixProject do
       {:net_address, "~> 0.2.0"},
       {:mox, "~> 1.0", only: :test},
       {:meilisearch, "~> 0.20.0"},
-      {:dialyxir, "~> 1.3", only: [:dev], runtime: false}
+      {:dialyxir, "~> 1.3", only: [:dev], runtime: false},
+      {:optimus, "~> 0.2"},
+      {:progress_bar, "> 0.0.0"}
     ]
   end
 end

@@ -26,3 +26,5 @@ binoculo_daemon-*.tar
 /tmp/
 
 meili_data
+
+/bin/

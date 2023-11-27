@@ -9,10 +9,10 @@ defmodule BinoculoDaemon.Application do
   @impl true
   def start(_type, _args) do
     children =
-      if Mix.env() == :test do
-        []
-      else
+      if System.get_env("PROD") do
         [Maestro]
+      else
+        []
       end
 
     opts = [strategy: :one_for_one, name: BinoculoDaemon.Supervisor]
