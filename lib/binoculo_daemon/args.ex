@@ -9,9 +9,9 @@ defmodule BinoculoDaemon.Args do
 
     Optimus.new!(
       name: "Binoculo",
-      description: "You Know, for Banner Grabbing!",
-      version: version,
-      author: "Girorme <g1r0rm3@gmail.com>",
+      description: "Binoculo: You Know, for Banner Grabbing!",
+      version: "Version: #{version}",
+      author: "Author: Girorme <g1r0rm3@gmail.com>",
       about: "A banner grabbing tool",
       allow_unknown_args: false,
       parse_double_dash: true,
