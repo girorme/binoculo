@@ -25,7 +25,7 @@ defmodule BinoculoDaemon.Util do
     end
   end
 
-  def format_http_response(http_response, _http_info) do
+  def format_http_response(http_response) do
     header_and_body = parse_header_and_body(http_response)
 
     [http_code | key_value] = String.split(header_and_body[:header], "\r\n")
