@@ -48,7 +48,7 @@ defmodule BinoculoDaemon.Maestro do
 
     host_info =
       if host_info[:port] in Util.get_possible_http_ports() do
-        http_response = Util.format_http_response(host_info[:response])
+        http_response = Util.format_http_response(host_info[:response], host_info)
 
         Map.put(
           host_info,

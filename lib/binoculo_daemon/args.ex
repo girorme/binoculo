@@ -52,6 +52,7 @@ defmodule BinoculoDaemon.Args do
               {port_parsed, _} -> {:ok, port_parsed}
             end
           end,
+          required: true
         ]
       ]
     ) |> Optimus.parse!(argv)

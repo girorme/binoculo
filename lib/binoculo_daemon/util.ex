@@ -25,13 +25,14 @@ defmodule BinoculoDaemon.Util do
     end
   end
 
-  def format_http_response(http_response) do
-    [header, _body] = String.split(http_response, "\r\n\r\n")
-    [http_code | key_value] = String.split(header, "\r\n")
+  def format_http_response(http_response, _http_info) do
+    header_and_body = parse_header_and_body(http_response)
+
+    [http_code | key_value] = String.split(header_and_body[:header], "\r\n")
 
     resp =
       for session <- key_value, into: %{} do
-        [key, value] = String.split(session, ": ")
+        [key, value] = String.split(session, ": ", parts: 2)
         {key, value}
       end
 
@@ -43,4 +44,11 @@ defmodule BinoculoDaemon.Util do
   end
 
   def get_possible_http_ports(), do: [8080, 80, 443]
+
+  defp parse_header_and_body(http_response) do
+    case String.split(http_response, "\r\n\r\n") do
+      [header, body] -> %{header: header, body: body}
+      header -> %{header: Enum.at(header, 0), body: nil}
+    end
+  end
 end
