@@ -7,19 +7,19 @@ Author: Girorme <g1r0rm3@gmail.com>
 A banner grabbing tool
 
 USAGE:
-    Binoculo [--dashboard] [-v] --range host_notation [--port port]
+    Binoculo [--dashboard] [-v] --range host_notation --port port(s)
     Binoculo --version
     Binoculo --help
 
-FLAGS (under construction):
+FLAGS:
 
-    --dashboard        Launches a shodan like dashboard                                                              
-    -v                 Verbosity level                                                                               
+    --dashboard        Launches a shodan like dashboard                                      
+    -v                 Verbosity level                                                       
 
 OPTIONS:
 
-    -r, --range        CIDR or IP range: 192.168.1.0/24 or 192.168.1.0..192.168.1.255                                
-    -p, --port         Port(s) to scan
+    -r, --range        CIDR or IP range: 192.168.1.0/24 or 192.168.1.0..192.168.1.255        
+    -p, --port         Port(s) to scan: 80,443,8080 or 80-8080 or 21,80-8080
 ```
 
 ## Usage
