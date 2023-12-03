@@ -1,4 +1,10 @@
 defmodule BinoculoDaemon.Msearch do
+  @moduledoc """
+  Handle msearch operations
+  """
+
+  require Logger
+
   @index "hosts"
 
   def create_index(_options) do
@@ -11,8 +17,15 @@ defmodule BinoculoDaemon.Msearch do
 
   def save(payload) do
     case Meilisearch.Documents.add_or_replace(@index, payload) do
-      {:ok, response} -> {:ok, response}
-      {:error, _code, response} -> {:error, response}
+      {:ok, response} ->
+        {:ok, response}
+
+      {:error, _code, response} ->
+        Logger.info(
+          "[#{payload['host']}:#{payload['port']}] Error saving result to msearch: #{response}"
+        )
+
+        {:error, response}
     end
   end
 

@@ -8,13 +8,18 @@ defmodule BinoculoDaemon.Maestro do
   alias BinoculoDaemon.Msearch
   alias BinoculoDaemon.{Results, Worker, Util}
 
-  def start_get_banner_workers(host_notation, port) do
+  def start_get_banner_workers(host_notation, ports) do
     {:ok, range} = Util.parse_range_or_cidr_notation(host_notation)
 
     # improve logic to receive "daemon" mode, to run in background receiving commands
     range
     |> Stream.map(&IP.to_string/1)
-    |> Task.async_stream(&GenServer.cast(__MODULE__, {:start_worker, %{host: &1, port: port}}),
+    |> Task.async_stream(
+      fn host ->
+        Enum.each(ports, fn port ->
+          start_worker(host, port)
+        end)
+      end,
       max_concurrency: 200,
       timeout: :infinity,
       ordered: false
@@ -35,6 +40,10 @@ defmodule BinoculoDaemon.Maestro do
   def init(state) do
     start_result_db()
     {:ok, state}
+  end
+
+  defp start_worker(host, port) do
+    GenServer.cast(__MODULE__, {:start_worker, %{host: host, port: port}})
   end
 
   defp start_result_db() do
@@ -59,15 +68,7 @@ defmodule BinoculoDaemon.Maestro do
         host_info
       end
 
-    case Msearch.save(host_info) do
-      {:ok, _response} ->
-        :ok
-
-      {:error, response} ->
-        Logger.info(
-          "[#{host_info['host']}:#{host_info['port']}] Error saving result to msearch: #{response}"
-        )
-    end
+    Msearch.save(host_info)
 
     :ok
   end
