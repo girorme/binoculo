@@ -28,7 +28,14 @@ OPTIONS:
 $ docker run -d -it --rm -p 7700:7700  -v $(pwd)/meili_data:/meili_data getmeili/meilisearch:v1.1
 ```
 
-2. Run some scan
+2. Run
+
+**Via docker**
+```
+$ docker run --rm --pull always ghcr.io/girorme/binoculo:main -r 192.168.101.1/24 -p 21,22
+```
+
+**Via your host machine (requires elixir > 1.14)**
 ```
 $ ./binoculo -r 192.168.1.0/20 -p 22
 ```
