@@ -21,9 +21,6 @@ jobs:
       - name: Checkout source code
         uses: actions/checkout@v4
 
-      - name: Setup git lfs
-        uses: ./.github/actions/setup-git-lfs
-
       - name: Docker meta
         id: meta
         uses: docker/metadata-action@v5
