@@ -8,7 +8,7 @@ Fast Network Scanning
 > Utilize the enhanced multi-process task functionality in Binoculo for rapid network scans. Leverage concurrent processing to swiftly gather information across numerous hosts and ports, providing quick insights into your network's services.
 
 Search engines Integration
-> Seamlessly integrate Binoculo with Meilisearch, enabling lightning-fast search capabilities over your scan results. Index and query your collected data with Meilisearch's powerful search engine, enabling efficient retrieval of network service information.
+> Seamlessly integrate Binoculo with Meilisearch (current), enabling lightning-fast search capabilities over your scan results. Index and query your collected data with Meilisearch's powerful search engine, enabling efficient retrieval of network service information.
 
 Specific Banner Searches
 > With Binoculo's new features, perform targeted searches for specific service banners. Refine your queries to focus on precise service types or versions, streamlining your network reconnaissance efforts.
