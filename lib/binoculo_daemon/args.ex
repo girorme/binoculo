@@ -6,10 +6,7 @@ defmodule BinoculoDaemon.Args do
   alias BinoculoDaemon.Util
 
   def parse_args(argv) do
-    version =
-      :application.get_key(:binoculo_daemon, :vsn)
-      |> elem(1)
-      |> List.to_string()
+    version = Util.version()
 
     Optimus.new!(
       name: "Binoculo",

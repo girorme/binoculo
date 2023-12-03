@@ -9,6 +9,29 @@ defmodule BinoculoDaemon.Util do
 
   alias IP
 
+  def version() do
+    :application.get_key(:binoculo_daemon, :vsn)
+    |> elem(1)
+    |> List.to_string()
+  end
+
+  def banner() do
+    """
+
+    ######   ####   ##   ##   #####    ######  ##   ##  ####      #####
+    #######  ####   ###  ##  #######  #######  ##   ##  ####     #######
+     ## ###   ##    #### ##  ##   ##  ###  ##  ##   ##   ##      ##   ##
+     #####    ##    #######  ##   ##  ##       ##   ##   ##      ##   ##
+     #####    ##    #######  ##   ##  ##       ##   ##   ##      ##   ##
+     ## ###   ##    ## ####  ##   ##  ###  ##  ##   ##   ##  ##  ##   ##
+    #######  ####   ##  ###  #######  #######  #######  #######  #######
+    ######   ####   ##   ##   #####    ######   #####   #######   #####
+    #{version()}
+
+    By Girorme # P0cl4bs
+    """
+  end
+
   def parse_range_or_cidr_notation(notation) do
     cond do
       Regex.match?(@ip_common_re, notation) ->
