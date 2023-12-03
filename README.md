@@ -1,5 +1,7 @@
 # BinoculoDaemon
 
+Binoculo is a lightning-fast banner grabbing tool built with Elixir, designed to swiftly retrieve service banners from target hosts. With its high-speed functionality, Binoculo efficiently collects service information across multiple ports, aiding in network reconnaissance and analysis.
+
 ## Commands
 ```
 Binoculo: You Know, for Banner Grabbing! Version: 0.1.0
