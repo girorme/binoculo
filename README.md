@@ -2,6 +2,20 @@
 
 Binoculo is a lightning-fast banner grabbing tool built with Elixir, designed to swiftly retrieve service banners from target hosts. With its high-speed functionality, Binoculo efficiently collects service information across multiple ports, aiding in network reconnaissance and analysis.
 
+## Features
+
+Fast Network Scanning
+> Utilize the enhanced multi-process task functionality in Binoculo for rapid network scans. Leverage concurrent processing to swiftly gather information across numerous hosts and ports, providing quick insights into your network's services.
+
+Search engines Integration
+> Seamlessly integrate Binoculo with Meilisearch, enabling lightning-fast search capabilities over your scan results. Index and query your collected data with Meilisearch's powerful search engine, enabling efficient retrieval of network service information.
+
+Specific Banner Searches
+> With Binoculo's new features, perform targeted searches for specific service banners. Refine your queries to focus on precise service types or versions, streamlining your network reconnaissance efforts.
+
+HTTP Write (pnscan inspired)
+> Leverage Binoculo's HTTP command transmission functionality to interact with discovered services. Send commands over HTTP to communicate with services and perform actions, enhancing your network exploration capabilities
+
 ## Commands
 ```
 Binoculo: You Know, for Banner Grabbing! Version: 0.1.0
