@@ -67,6 +67,9 @@ jobs:
 
   merge-and-push-image:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
     needs:
       - build-image
     steps:
