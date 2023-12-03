@@ -10,10 +10,10 @@ Fast Network Scanning
 Search engines Integration
 > Seamlessly integrate Binoculo with Meilisearch (current), enabling lightning-fast search capabilities over your scan results. Index and query your collected data with Meilisearch's powerful search engine, enabling efficient retrieval of network service information.
 
-Specific Banner Searches
+WIP - Specific Banner Searches
 > With Binoculo's new features, perform targeted searches for specific service banners. Refine your queries to focus on precise service types or versions, streamlining your network reconnaissance efforts.
 
-HTTP Write (pnscan inspired)
+WIP - HTTP Write (pnscan inspired)
 > Leverage Binoculo's HTTP command transmission functionality to interact with discovered services. Send commands over HTTP to communicate with services and perform actions, enhancing your network exploration capabilities
 
 ## Commands
