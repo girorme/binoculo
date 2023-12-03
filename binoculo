@@ -1,3 +1,14 @@
 #!/bin/bash
 
-MIX_ENV=prod mix escript.build && PROD=true ./bin/binoculo $@
+# Check if bin/binoculo exists
+if [ ! -f "bin/binoculo" ]; then
+    MIX_ENV=prod mix escript.build
+fi
+
+# Check for a flag to force build, irrespective of bin/binoculo existence
+if [ "$1" == "--force-build" ]; then
+    MIX_ENV=prod mix escript.build
+    shift  # Remove the --force-build flag from arguments
+fi
+
+PROD=true ./bin/binoculo "$@"
