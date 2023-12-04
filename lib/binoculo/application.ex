@@ -1,10 +1,10 @@
-defmodule BinoculoDaemon.Application do
+defmodule Binoculo.Application do
   @moduledoc """
   Main application
   """
   use Application
 
-  alias BinoculoDaemon.Maestro
+  alias Binoculo.Maestro
 
   @impl true
   def start(_type, _args) do
@@ -15,7 +15,7 @@ defmodule BinoculoDaemon.Application do
         []
       end
 
-    opts = [strategy: :one_for_one, name: BinoculoDaemon.Supervisor]
+    opts = [strategy: :one_for_one, name: Binoculo.Supervisor]
     Supervisor.start_link(children, opts)
   end
 end

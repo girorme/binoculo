@@ -1,7 +1,7 @@
 defmodule ResultTest do
   use ExUnit.Case
 
-  alias BinoculoDaemon.Results
+  alias Binoculo.Results
 
   setup do
     Results.init_db()

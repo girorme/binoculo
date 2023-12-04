@@ -1,7 +1,7 @@
 defmodule UtilTest do
   use ExUnit.Case, async: true
 
-  alias BinoculoDaemon.Util
+  alias Binoculo.Util
 
   test "should parse range or subnet based on user input" do
     input = %{

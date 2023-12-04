@@ -1,21 +1,21 @@
-defmodule BinoculoDaemon.MixProject do
+defmodule Binoculo.MixProject do
   use Mix.Project
 
   def project do
     [
-      app: :binoculo_daemon,
+      app: :binoculo,
       version: "0.1.0",
       elixir: "~> 1.14",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
-      test_coverage: [ignore_modules: [BinoculoDaemon]],
+      test_coverage: [ignore_modules: [Binoculo]],
       escript: escript()
     ]
   end
 
   def escript do
     [
-      main_module: BinoculoDaemon,
+      main_module: Binoculo,
       path: "bin/binoculo"
     ]
   end
@@ -24,7 +24,7 @@ defmodule BinoculoDaemon.MixProject do
   def application do
     [
       extra_applications: [:logger, :crypto],
-      mod: {BinoculoDaemon.Application, []}
+      mod: {Binoculo.Application, []}
     ]
   end
 

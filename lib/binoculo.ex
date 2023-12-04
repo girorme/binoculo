@@ -1,12 +1,12 @@
-defmodule BinoculoDaemon do
+defmodule Binoculo do
   @moduledoc """
-  Documentation for `BinoculoDaemon`.
+  Documentation for `Binoculo`.
   """
 
-  alias BinoculoDaemon.Results
-  alias BinoculoDaemon.Maestro
-  alias BinoculoDaemon.Args
-  alias BinoculoDaemon.Util
+  alias Binoculo.Results
+  alias Binoculo.Maestro
+  alias Binoculo.Args
+  alias Binoculo.Util
 
   def main(argv) do
     parsed_args = Args.parse_args(argv)
@@ -18,7 +18,7 @@ defmodule BinoculoDaemon do
 
     IO.puts(Util.banner())
 
-    IO.puts("BinoculoDaemon started!")
+    IO.puts("Binoculo started!")
     IO.puts("[*] Host: #{host_notation}")
     IO.puts("[*] Ports: #{port_count}: #{Enum.join(Enum.take(ports, 5), ", ")}...")
     IO.puts("[*] Total hosts to scan: #{qty_to_run}, with #{port_count} ports each")

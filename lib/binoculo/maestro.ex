@@ -1,12 +1,12 @@
-defmodule BinoculoDaemon.Maestro do
+defmodule Binoculo.Maestro do
   @moduledoc """
   Coordinate workers spawn and result saving"
   """
   use GenServer
 
   require Logger
-  alias BinoculoDaemon.Msearch
-  alias BinoculoDaemon.{Results, Worker, Util}
+  alias Binoculo.Msearch
+  alias Binoculo.{Results, Worker, Util}
 
   def start_get_banner_workers(host_notation, ports) do
     {:ok, range} = Util.parse_range_or_cidr_notation(host_notation)

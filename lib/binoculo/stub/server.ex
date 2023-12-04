@@ -1,4 +1,4 @@
-defmodule BinoculoDaemon.Stub.Server do
+defmodule Binoculo.Stub.Server do
   @moduledoc """
   Module used to stub a server connection in tests
   """

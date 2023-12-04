@@ -1,4 +1,4 @@
-defmodule BinoculoDaemon.Msearch do
+defmodule Binoculo.Msearch do
   @moduledoc """
   Handle msearch operations
   """

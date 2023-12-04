@@ -1,4 +1,4 @@
-defmodule BinoculoDaemon.Util do
+defmodule Binoculo.Util do
   @moduledoc """
   Util functions
   """
@@ -10,7 +10,7 @@ defmodule BinoculoDaemon.Util do
   alias IP
 
   def version() do
-    :application.get_key(:binoculo_daemon, :vsn)
+    :application.get_key(:binoculo, :vsn)
     |> elem(1)
     |> List.to_string()
   end
