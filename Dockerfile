@@ -27,4 +27,4 @@ COPY binoculo /app/binoculo.sh
 
 # Set the entry point and command to run when the container starts
 ENTRYPOINT ["/bin/bash", "binoculo.sh"]
-CMD ["-h"]  # Provide a default argument to show usage info
+CMD ["--help"]  # Provide a default argument to show usage info
