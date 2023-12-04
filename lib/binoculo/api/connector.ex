@@ -1,4 +1,4 @@
-defmodule BinoculoDaemon.Api.Connector do
+defmodule Binoculo.Api.Connector do
   @moduledoc """
   Socket client "interface"
   """

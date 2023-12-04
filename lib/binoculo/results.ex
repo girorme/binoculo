@@ -1,4 +1,4 @@
-defmodule BinoculoDaemon.Results do
+defmodule Binoculo.Results do
   @moduledoc """
   Store workers results
   """

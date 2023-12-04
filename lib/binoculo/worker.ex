@@ -1,9 +1,9 @@
-defmodule BinoculoDaemon.Worker do
+defmodule Binoculo.Worker do
   @moduledoc """
   Main Worker
   """
 
-  alias BinoculoDaemon.Util
+  alias Binoculo.Util
 
   @type host() :: String.t()
   @type host_port() :: integer()

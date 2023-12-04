@@ -4,8 +4,8 @@ defmodule WorkerTest do
   """
   use ExUnit.Case, async: true
 
-  alias BinoculoDaemon.Worker
-  alias BinoculoDaemon.Stub.Server
+  alias Binoculo.Worker
+  alias Binoculo.Stub.Server
 
   describe "Testing the banner grab function" do
     test "get banner passing ip + port" do

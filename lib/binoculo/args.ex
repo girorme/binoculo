@@ -1,9 +1,9 @@
-defmodule BinoculoDaemon.Args do
+defmodule Binoculo.Args do
   @moduledoc """
   Parse arguments
   """
 
-  alias BinoculoDaemon.Util
+  alias Binoculo.Util
 
   def parse_args(argv) do
     version = Util.version()

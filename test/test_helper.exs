@@ -1,2 +1,2 @@
 ExUnit.start()
-# Mox.defmock(ConnectorMock, for: BinoculoDaemon.ConnectorApi)
+# Mox.defmock(ConnectorMock, for: Binoculo.ConnectorApi)
