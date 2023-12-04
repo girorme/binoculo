@@ -20,8 +20,6 @@ build_tool() {
 NETWORK_NAME="binoculo-network"
 MEILISEARCH_CONTAINER="meilisearch"
 
-echo -e "${YELLOW}Setting up Meilisearch and binoculo...${NC}"
-
 # Check if the flag for build is passed
 if [[ "$1" == "-b" ]]; then
     build_tool
@@ -36,6 +34,8 @@ if ! docker network inspect "$NETWORK_NAME" &> /dev/null; then
     docker network create "$NETWORK_NAME"
 fi
 
+echo -e "${YELLOW}Setting up Meilisearch and binoculo...${NC}"
+
 # Check if the Meilisearch container already exists
 if ! docker inspect "$MEILISEARCH_CONTAINER" &> /dev/null; then
     # Run Meilisearch container if it doesn't exist
@@ -49,6 +49,6 @@ fi
 # Run your tool container linked to the same network with user-provided arguments
 echo -e "${YELLOW}Launching binoculo${NC}"
 
-docker run --rm --network="$NETWORK_NAME" ghcr.io/girorme/binoculo:main "$@"
+docker run --rm --pull always --network="$NETWORK_NAME" ghcr.io/girorme/binoculo:main "$@"
 
-echo -e "${GREEN}Your-tool execution completed.${NC}"
+echo -e "${GREEN}Binoculo execution completed.${NC}"

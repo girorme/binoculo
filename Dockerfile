@@ -21,10 +21,11 @@ FROM bitwalker/alpine-elixir:latest
 # Set the working directory inside the container
 WORKDIR /app
 
+ENV PROD=true
+
 # Copy from builder stage
 COPY --from=builder /app/bin/binoculo /app/bin/binoculo
-COPY binoculo /app/binoculo.sh
 
 # Set the entry point and command to run when the container starts
-ENTRYPOINT ["/bin/bash", "binoculo.sh"]
+ENTRYPOINT ["/app/bin/binoculo"]
 CMD ["--help"]  # Provide a default argument to show usage info
