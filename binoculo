@@ -11,9 +11,9 @@ build_tool() {
         echo -e "${YELLOW}Building my-tool...${NC}"
         # Perform the build process here
         MIX_ENV=prod mix escript.build
-        echo -e "${GREEN}my-tool build complete.${NC}"
+        echo -e "${GREEN}binoculo build complete.${NC}"
     else
-        echo -e "${GREEN}my-tool is already built.${NC}"
+        echo -e "${GREEN}binoculo is already built.${NC}"
     fi
 }
 
@@ -36,19 +36,20 @@ fi
 
 echo -e "${YELLOW}Setting up Meilisearch and binoculo...${NC}"
 
-# Check if the Meilisearch container already exists
-if ! docker inspect "$MEILISEARCH_CONTAINER" &> /dev/null; then
-    # Run Meilisearch container if it doesn't exist
-    echo -e "${YELLOW}Starting Meilisearch container...${NC}"
-    docker run -d --name "$MEILISEARCH_CONTAINER" --network="$NETWORK_NAME" -p 7700:7700 -v "$(pwd)/meili_data:/meili_data" getmeili/meilisearch:v1.1
-    echo -e "${GREEN}Meilisearch started.${NC}"
-else
+# Check if the Meilisearch container is already running
+if docker ps --format '{{.Names}}' | grep -q "$MEILISEARCH_CONTAINER"; then
     echo -e "${GREEN}Meilisearch is already running.${NC}"
+else
+    # Run Meilisearch container if it's not running
+    docker rm "$MEILISEARCH_CONTAINER"
+    echo -e "${YELLOW}Starting Meilisearch container...${NC}"
+    docker run -d --name "$MEILISEARCH_CONTAINER" --network "$NETWORK_NAME" -p 7700:7700 -v "$(pwd)/meili_data:/meili_data" getmeili/meilisearch:v1.1
+    echo -e "${GREEN}Meilisearch started.${NC}"
 fi
 
 # Run your tool container linked to the same network with user-provided arguments
-echo -e "${YELLOW}Launching binoculo${NC}"
+echo -e "${YELLOW}Launching binoculo via docker${NC}"
 
-docker run --rm --pull always --network="$NETWORK_NAME" ghcr.io/girorme/binoculo:main "$@"
+docker run --rm --network "$NETWORK_NAME" ghcr.io/girorme/binoculo:main "$@"
 
 echo -e "${GREEN}Binoculo execution completed.${NC}"

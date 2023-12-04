@@ -22,6 +22,7 @@ FROM bitwalker/alpine-elixir:latest
 WORKDIR /app
 
 ENV PROD=true
+ENV MEILISEARCH_ENDPOINT="http://meilisearch:7700"
 
 # Copy from builder stage
 COPY --from=builder /app/bin/binoculo /app/bin/binoculo
