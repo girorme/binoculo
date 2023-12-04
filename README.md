@@ -1,7 +1,7 @@
-# BinoculoDaemon
-
 ![main-ci](https://github.com/girorme/binoculo-daemon/actions/workflows/elixir.yml/badge.svg?branch=main)
 [![License](https://img.shields.io/badge/License-MIT-blue)](https://github.com/girorme/binoculo-daemon/blob/main/LICENSE)
+
+![logo](repo_assets/binoculo-logo.png)
 
 Binoculo is a lightning-fast banner grabbing tool built with Elixir, designed to swiftly retrieve service banners from target hosts. With its high-speed functionality, Binoculo efficiently collects service information across multiple ports, aiding in network reconnaissance and analysis.
 
