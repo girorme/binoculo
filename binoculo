@@ -5,6 +5,9 @@ GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
+NETWORK_NAME="binoculo-network"
+MEILISEARCH_CONTAINER="meilisearch"
+
 build_tool() {
     # Check if the tool build is missing and build it if the flag is passed
     if [ ! -f "bin/binoculo" ]; then
@@ -17,9 +20,6 @@ build_tool() {
     fi
 }
 
-NETWORK_NAME="binoculo-network"
-MEILISEARCH_CONTAINER="meilisearch"
-
 # Check if the flag for build is passed
 if [[ "$1" == "-b" ]]; then
     build_tool
@@ -28,10 +28,10 @@ if [[ "$1" == "-b" ]]; then
 fi
 
 # Check if the network exists
-if ! docker network inspect "$NETWORK_NAME" &> /dev/null; then
+if ! docker network inspect $NETWORK_NAME &> /dev/null; then
     # Create the Docker network
     echo -e "${YELLOW}Creating network: $NETWORK_NAME${NC}"
-    docker network create "$NETWORK_NAME"
+    docker network create $NETWORK_NAME
 fi
 
 echo -e "${YELLOW}Setting up Meilisearch and binoculo...${NC}"
@@ -41,15 +41,15 @@ if docker ps --format '{{.Names}}' | grep -q "$MEILISEARCH_CONTAINER"; then
     echo -e "${GREEN}Meilisearch is already running.${NC}"
 else
     # Run Meilisearch container if it's not running
-    docker rm "$MEILISEARCH_CONTAINER"
+    docker rm $MEILISEARCH_CONTAINER
     echo -e "${YELLOW}Starting Meilisearch container...${NC}"
-    docker run -d --name "$MEILISEARCH_CONTAINER" --network "$NETWORK_NAME" -p 7700:7700 -v "$(pwd)/meili_data:/meili_data" getmeili/meilisearch:v1.1
+    docker run -d --name $MEILISEARCH_CONTAINER --network $NETWORK_NAME -p 7700:7700 -v "$(pwd)/meili_data:/meili_data" getmeili/meilisearch:v1.1
     echo -e "${GREEN}Meilisearch started.${NC}"
 fi
 
 # Run your tool container linked to the same network with user-provided arguments
 echo -e "${YELLOW}Launching binoculo via docker${NC}"
 
-docker run --rm --network "$NETWORK_NAME" ghcr.io/girorme/binoculo:main "$@"
+docker run --name binoculo --rm --network $NETWORK_NAME ghcr.io/girorme/binoculo:main "$@"
 
 echo -e "${GREEN}Binoculo execution completed.${NC}"
