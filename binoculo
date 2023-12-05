@@ -7,7 +7,9 @@ NC='\033[0m' # No Color
 
 NETWORK_NAME="binoculo-network"
 MEILISEARCH_CONTAINER="meilisearch"
+DOCKER_IMAGE="ghcr.io/girorme/binoculo:main"
 
+# Build binoculo locally (needs elixir >= 1.14)
 build_tool() {
     # Check if the tool build is missing and build it if the flag is passed
     if [ ! -f "bin/binoculo" ]; then
@@ -20,11 +22,23 @@ build_tool() {
     fi
 }
 
+# Update binoculo docker image
+update() {
+    echo -e "${YELLOW}Updating binoculo...${NC}"
+    docker pull $DOCKER_IMAGE
+    echo -e "${GREEN}binoculo updated.${NC}"
+}
+
 # Check if the flag for build is passed
 if [[ "$1" == "-b" ]]; then
     build_tool
     # Remove the flag from the arguments
     shift
+fi
+
+if [[ "$1" == "-u" ]]; then
+    update
+    exit 0
 fi
 
 # Check if the network exists
@@ -50,6 +64,6 @@ fi
 # Run your tool container linked to the same network with user-provided arguments
 echo -e "${YELLOW}Launching binoculo via docker${NC}"
 
-docker run --name binoculo --rm --network $NETWORK_NAME ghcr.io/girorme/binoculo:main "$@"
+docker run --name binoculo --rm --network $NETWORK_NAME $DOCKER_IMAGE "$@"
 
 echo -e "${GREEN}Binoculo execution completed.${NC}"

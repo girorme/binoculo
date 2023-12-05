@@ -63,6 +63,13 @@ $ ./binoculo -r 192.168.1.0/20 -p 22
 
 ---
 
+## Update
+To update to the latest version use the command bellow:
+
+> ./binoculo -u
+
+---
+
 In the future we'll be able to acess a better page to use shodan like filters
 
 ## Architecture
