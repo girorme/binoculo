@@ -1,0 +1,20 @@
+{
+  "name": "binoculo-dashboard",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.html",
+  "scripts": {
+    "start": "parcel index.html --global instantMeiliSearch",
+    "build": "parcel build --global instantMeiliSearch index.html"
+  },
+  "dependencies": {
+    "@babel/core": "7.14.0",
+    "@meilisearch/instant-meilisearch": "0.12.0",
+    "parcel-bundler": "1.12.5"
+  },
+  "devDependencies": {
+    "@babel/core": "7.2.0",
+    "parcel-bundler": "^1.6.1"
+  },
+  "keywords": []
+}
