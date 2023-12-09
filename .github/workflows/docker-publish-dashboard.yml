@@ -1,4 +1,4 @@
-name: Build Docker image
+name: Build Docker dashboard image
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
       - main
 
 env:
-  DOCKER_IMAGE: ghcr.io/girorme/binoculo
+  DOCKER_IMAGE: ghcr.io/girorme/binoculo-dashboard
 
 jobs:
   build-image:
@@ -46,7 +46,7 @@ jobs:
         id: build
         uses: docker/build-push-action@v5
         with:
-          context: .
+          context: dashboard/
           platforms: ${{ matrix.platform }}
           labels: ${{ steps.meta.outputs.labels }}
           outputs: type=image,name=${{ env.DOCKER_IMAGE }},push-by-digest=true,name-canonical=true,push=true

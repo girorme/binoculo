@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <meta name="theme-color" content="#000000" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/instantsearch.css@7/themes/algolia-min.css"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="./src/index.css" />
+    <link rel="stylesheet" href="./src/app.css" />
+
+    <title>Binoculo dashboard</title>
+  </head>
+  <body>
+    <div class="ais-InstantSearch">
+      <h1>Binoculo dashboard</h1>
+
+      <div class="left-panel">
+        <div id="clear-refinements"></div>
+
+        <h2>Ports</h2>
+        <div class="p-2" id="port-list"></div>
+        <h2>Products (header based)</h2>
+        <div class="p-2" id="product-list"></div>
+      </div>
+
+      <div class="right-panel">
+        <div id="searchbox" class="ais-SearchBox"></div>
+        <div class="break-words line-clamp-1" id="hits"></div>
+        <div id="pagination"></div>
+      </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/instantsearch.js@4"></script>
+    <script src="./src/app.js"></script>
+  </body>
+</html>
