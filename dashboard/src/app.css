@@ -2,6 +2,7 @@ body {
     font-family: sans-serif;
     padding: 1em;
   }
+
   
   .ais-ClearRefinements {
     margin: 1em 0;
@@ -31,8 +32,12 @@ body {
   }
   
   .ais-Hits-item {
-    margin-bottom: 1em;
+    margin-bottom: 5px;
     width: calc(50% - 1rem);
+    color: gainsboro;
+    border: none;
+    box-shadow: none;
+    height: 100%;
   }
   
   .ais-Hits-item img {
@@ -49,7 +54,6 @@ body {
   .hit-description {
     font-size: 90%;
     margin-bottom: 0.5em;
-    color: grey;
   }
   
   .hit-info {
