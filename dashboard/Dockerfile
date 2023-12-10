@@ -8,4 +8,4 @@ COPY . .
 
 EXPOSE 1234
 
-CMD [ "yarn", "run", "start" ]
+ENTRYPOINT [ "npm", "run", "start" ]
