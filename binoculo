@@ -7,7 +7,9 @@ NC='\033[0m' # No Color
 
 NETWORK_NAME="binoculo-network"
 MEILISEARCH_CONTAINER="meilisearch"
+DASHBOARD_CONTAINER="binoculo-dashboard"
 DOCKER_IMAGE="ghcr.io/girorme/binoculo:main"
+DASHBOARD_DOCKER_IMAGE="ghcr.io/girorme/binoculo-dashboard:main"
 
 # Build binoculo locally (needs elixir >= 1.14)
 build_tool() {
@@ -22,6 +24,32 @@ build_tool() {
     fi
 }
 
+start_dashboard() {
+    # Check if the dashboard container is already running
+    if docker ps --format '{{.Names}}' | grep -q "$DASHBOARD_CONTAINER"; then
+        echo -e "${GREEN}Binoculo dashboard is already running.${NC}"
+    else
+        # Run Meilisearch container if it's not running
+        docker rm $DASHBOARD_CONTAINER
+        echo -e "${YELLOW}Starting binoculo dashboard container...${NC}"
+        docker run -d --name $DASHBOARD_CONTAINER --network $NETWORK_NAME -p 3000:1234 $DASHBOARD_DOCKER_IMAGE
+        echo -e "${GREEN}Dashboard started.${NC}"
+    fi
+}
+
+start_meilisearch() {
+    # Check if the meilisearch container is already running
+    if docker ps --format '{{.Names}}' | grep -q "$MEILISEARCH_CONTAINER"; then
+        echo -e "${GREEN}Meilisearch is already running.${NC}"
+    else
+        # Run Meilisearch container if it's not running
+        docker rm $MEILISEARCH_CONTAINER
+        echo -e "${YELLOW}Starting Meilisearch container...${NC}"
+        docker run -d --name $MEILISEARCH_CONTAINER --network $NETWORK_NAME -p 7700:7700 -v "$(pwd)/meili_data:/meili_data" getmeili/meilisearch:v1.1
+        echo -e "${GREEN}Meilisearch started.${NC}"
+    fi
+}
+
 # Update binoculo docker image
 update() {
     echo -e "${YELLOW}Updating binoculo...${NC}"
@@ -32,13 +60,17 @@ update() {
 # Check if the flag for build is passed
 if [[ "$1" == "-b" ]]; then
     build_tool
-    # Remove the flag from the arguments
     shift
 fi
 
 if [[ "$1" == "-u" ]]; then
     update
     exit 0
+fi
+
+if [[ "$1" == "start-meilisearch" ]]; then
+    start_meilisearch
+    shift
 fi
 
 # Check if the network exists
@@ -50,16 +82,8 @@ fi
 
 echo -e "${YELLOW}Setting up Meilisearch and binoculo...${NC}"
 
-# Check if the Meilisearch container is already running
-if docker ps --format '{{.Names}}' | grep -q "$MEILISEARCH_CONTAINER"; then
-    echo -e "${GREEN}Meilisearch is already running.${NC}"
-else
-    # Run Meilisearch container if it's not running
-    docker rm $MEILISEARCH_CONTAINER
-    echo -e "${YELLOW}Starting Meilisearch container...${NC}"
-    docker run -d --name $MEILISEARCH_CONTAINER --network $NETWORK_NAME -p 7700:7700 -v "$(pwd)/meili_data:/meili_data" getmeili/meilisearch:v1.1
-    echo -e "${GREEN}Meilisearch started.${NC}"
-fi
+start_meilisearch
+start_dashboard
 
 # Run your tool container linked to the same network with user-provided arguments
 echo -e "${YELLOW}Launching binoculo via docker${NC}"
