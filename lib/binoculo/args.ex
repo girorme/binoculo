@@ -54,6 +54,21 @@ defmodule Binoculo.Args do
             end
           end,
           required: true
+        ],
+        output: [
+          value_name: "output",
+          short: "-o",
+          long: "--output",
+          help: "Output file",
+          parser: fn output ->
+            case File.open("output/#{output}", [:write]) do
+              {:ok, file} ->
+                {:ok, file}
+
+              {:error, _} ->
+                {:error, "invalid output file"}
+            end
+          end
         ]
       ]
     )

@@ -4,15 +4,19 @@ defmodule Binoculo.Application do
   """
   use Application
 
-  alias Binoculo.Maestro
+  alias Binoculo.{Config, Maestro}
 
   @impl true
   def start(_type, _args) do
+    children = [
+      {Config, %{}}
+    ]
+
     children =
       if System.get_env("PROD") do
-        [Maestro]
+        children ++ [Maestro]
       else
-        []
+        children
       end
 
     opts = [strategy: :one_for_one, name: Binoculo.Supervisor]
