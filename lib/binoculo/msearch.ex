@@ -21,10 +21,6 @@ defmodule Binoculo.Msearch do
         {:ok, response}
 
       {:error, _code, response} ->
-        Logger.info(
-          "[#{payload['host']}:#{payload['port']}] Error saving result to msearch: #{response}"
-        )
-
         {:error, response}
     end
   end

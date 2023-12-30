@@ -33,7 +33,7 @@ defmodule Binoculo.Maestro do
 
   @spec start_link(any) :: :ignore | {:error, any} | {:ok, pid}
   def start_link(_args) do
-    GenServer.start_link(__MODULE__, [], name: __MODULE__)
+    GenServer.start_link(__MODULE__, %{}, name: __MODULE__)
   end
 
   @spec init(any()) :: {:ok, any()}
@@ -68,6 +68,7 @@ defmodule Binoculo.Maestro do
         host_info
       end
 
+    # TODO: Refactor to save through a module that will save to multiple sources
     Msearch.save(host_info)
 
     :ok

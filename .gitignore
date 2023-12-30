@@ -28,4 +28,4 @@ binoculo-*.tar
 meili_data
 
 /bin/
-output
+output/*
