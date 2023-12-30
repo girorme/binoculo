@@ -68,6 +68,16 @@ defmodule Binoculo.Util do
 
   def get_possible_http_ports(), do: [8080, 80, 443]
 
+  def host_info_to_text_template(%{host: host, port: port, response: response} = _host_info) do
+    """
+    --=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--
+    Host: #{host}
+    Port: #{port}
+    Banner: #{response}
+    --=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--
+    """
+  end
+
   defp parse_header_and_body(http_response) do
     case String.split(http_response, "\r\n\r\n") do
       [header, body] -> %{header: header, body: body}

@@ -13,15 +13,10 @@ DASHBOARD_DOCKER_IMAGE="ghcr.io/girorme/binoculo-dashboard:main"
 
 # Build binoculo locally (needs elixir >= 1.14)
 build_tool() {
-    # Check if the tool build is missing and build it if the flag is passed
-    if [ ! -f "bin/binoculo" ]; then
-        echo -e "${YELLOW}Building my-tool...${NC}"
-        # Perform the build process here
-        MIX_ENV=prod mix escript.build
-        echo -e "${GREEN}binoculo build complete.${NC}"
-    else
-        echo -e "${GREEN}binoculo is already built.${NC}"
-    fi
+    echo -e "${YELLOW}Building binoculo...${NC}"
+    # Perform the build process here
+    MIX_ENV=prod mix escript.build
+    echo -e "${GREEN}binoculo build complete.${NC}"
 }
 
 start_dashboard() {
@@ -60,7 +55,7 @@ update() {
 # Check if the flag for build is passed
 if [[ "$1" == "-b" ]]; then
     build_tool
-    shift
+    exit 0
 fi
 
 if [[ "$1" == "-u" ]]; then
