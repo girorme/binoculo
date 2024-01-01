@@ -21,8 +21,8 @@ FROM bitwalker/alpine-elixir:latest
 # Set the working directory inside the container
 WORKDIR /app
 
-ENV PROD=true
-ENV MEILISEARCH_ENDPOINT="http://meilisearch:7700"
+RUN mkdir output/
+RUN chmod 777 output/
 
 # Copy from builder stage
 COPY --from=builder /app/bin/binoculo /app/bin/binoculo

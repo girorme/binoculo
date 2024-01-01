@@ -83,6 +83,6 @@ start_dashboard
 # Run your tool container linked to the same network with user-provided arguments
 echo -e "${YELLOW}Launching binoculo via docker${NC}"
 
-docker run --name binoculo --rm --network $NETWORK_NAME $DOCKER_IMAGE "$@"
+docker run --name binoculo --rm --network $NETWORK_NAME -v $(pwd)/output:/app/output --env-file ./.env $DOCKER_IMAGE "$@"
 
 echo -e "${GREEN}Binoculo execution completed.${NC}"
