@@ -73,7 +73,8 @@ defmodule Binoculo.Util do
     --=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--
     Host: #{host}
     Port: #{port}
-    Banner: #{response}
+
+    #{response}
     --=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--
     """
   end
