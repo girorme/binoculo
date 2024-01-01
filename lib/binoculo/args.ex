@@ -17,11 +17,6 @@ defmodule Binoculo.Args do
       allow_unknown_args: false,
       parse_double_dash: true,
       flags: [
-        print_header: [
-          long: "--dashboard",
-          help: "Launches a shodan like dashboard",
-          multiple: false
-        ],
         verbosity: [
           short: "-v",
           help: "Verbosity level",

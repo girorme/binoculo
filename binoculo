@@ -63,8 +63,14 @@ if [[ "$1" == "-u" ]]; then
     exit 0
 fi
 
-if [[ "$1" == "start-meilisearch" ]]; then
+if [[ "$1" == "--meili" ]]; then
     start_meilisearch
+    shift
+fi
+
+if [[ "$1" == "--dashboard" ]]; then
+    start_meilisearch
+    start_dashboard
     shift
 fi
 
@@ -74,11 +80,6 @@ if ! docker network inspect $NETWORK_NAME &> /dev/null; then
     echo -e "${YELLOW}Creating network: $NETWORK_NAME${NC}"
     docker network create $NETWORK_NAME
 fi
-
-echo -e "${YELLOW}Setting up Meilisearch and binoculo...${NC}"
-
-start_meilisearch
-start_dashboard
 
 # Run your tool container linked to the same network with user-provided arguments
 echo -e "${YELLOW}Launching binoculo via docker${NC}"
