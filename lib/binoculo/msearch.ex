@@ -4,6 +4,7 @@ defmodule Binoculo.Msearch do
   """
 
   require Logger
+  alias Binoculo.Util
 
   @index "hosts"
 
@@ -16,6 +17,19 @@ defmodule Binoculo.Msearch do
   end
 
   def save(payload) do
+    payload =
+      if payload[:port] in Util.get_possible_http_ports() do
+        http_response = Util.format_http_response(payload[:response])
+
+        Map.put(
+          payload,
+          :http_response,
+          http_response
+        )
+      else
+        payload
+      end
+
     case Meilisearch.Documents.add_or_replace(@index, payload) do
       {:ok, response} ->
         {:ok, response}

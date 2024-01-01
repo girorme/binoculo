@@ -5,7 +5,6 @@ defmodule Binoculo.Maestro do
   use GenServer
 
   require Logger
-  alias Binoculo.Msearch
   alias Binoculo.{Results, Worker, Util}
 
   def start_get_banner_workers(host_notation, ports) do
@@ -54,23 +53,6 @@ defmodule Binoculo.Maestro do
 
   defp finish_item(host_info) do
     Results.finish_item(host_info)
-
-    host_info =
-      if host_info[:port] in Util.get_possible_http_ports() do
-        http_response = Util.format_http_response(host_info[:response])
-
-        Map.put(
-          host_info,
-          :http_response,
-          http_response
-        )
-      else
-        host_info
-      end
-
-    # TODO: Refactor to save through a module that will save to multiple sources
-    Msearch.save(host_info)
-
     :ok
   end
 
