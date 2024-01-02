@@ -73,7 +73,15 @@ $ ./binoculo --range 192.168.101.1/24 -p 80 --output result.txt -w "GET / HTTP/1
 $ ./binoculo --range 192.168.101.1/24 -p 80 --output result.txt -w "HEAD / HTTP/1.1" -r "Apache"
 ```
 
-- You can get/filter the results via a dashboard (wip) using the `--dashboard` flag:
+- For the next features, you need to execute:
+
+```
+$ ./binoculo --meili
+```
+
+The command above launches a meilisearch container!
+
+- Now you can get/filter the results via a dashboard (wip) using the `--dashboard` flag:
 ```
 $ ./binoculo --range 192.168.101.1/24 -p 21,22 --output my_result.txt --dashboard
 ```
