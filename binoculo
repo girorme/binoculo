@@ -63,7 +63,7 @@ fi
 
 if [[ "$1" == "--meili" ]]; then
     start_meilisearch
-    shift
+    exit 0
 fi
 
 if [[ "$1" == "--dashboard" ]]; then

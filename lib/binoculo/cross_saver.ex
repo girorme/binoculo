@@ -3,12 +3,11 @@ defmodule Binoculo.CrossSaver do
   Save to multiple sources
   """
 
-  alias Binoculo.{Config, Results, Util}
-
-  # TODO: Add save to msearch
+  alias Binoculo.{Config, Msearch, Results, Util}
 
   def save_results() do
     check_and_save_to_file()
+    check_and_save_to_msearch()
   end
 
   defp check_and_save_to_file() do
@@ -34,6 +33,24 @@ defmodule Binoculo.CrossSaver do
 
     Config.get_output_file()
     |> File.write(results, [:append])
+  end
+
+  defp check_and_save_to_msearch() do
+    save_to_msearch_enabled?()
+    |> save_to_msearch()
+  end
+
+  # TODO: Add save to msearch flag
+  defp save_to_msearch_enabled?(), do: true
+
+  defp save_to_msearch(true) do
+    results =
+      Results.get_finished()
+      |> check_and_filter_read_payload()
+
+    Enum.each(results, &Msearch.save/1)
+
+    :ok
   end
 
   defp check_and_filter_read_payload(results) do
