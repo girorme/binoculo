@@ -3,7 +3,7 @@ defmodule Binoculo.Worker do
   Main Worker
   """
 
-  alias Binoculo.Util
+  alias Binoculo.{Config, Util}
 
   @type host() :: String.t()
   @type host_port() :: integer()
@@ -50,9 +50,31 @@ defmodule Binoculo.Worker do
         :tcp -> ""
       end
 
-    case :gen_tcp.send(socket, payload) do
-      :ok -> {:ok, socket}
-      {:error, reason} -> {:error, reason}
+    # User write payload
+    payload =
+      if write_payload = Config.get_write_payload() do
+        write_payload
+      else
+        payload
+      end
+
+    # TODO: improve code readbility
+    if write_payload do
+      case :gen_tcp.send(socket, payload) do
+        :ok ->
+          # Send extra payload when user wants to write to socket
+          case :gen_tcp.send(socket, "\r\n\r\n") do
+            :ok -> {:ok, socket}
+            {:error, reason} -> {:error, reason}
+          end
+        {:error, reason} ->
+          {:error, reason}
+      end
+    else
+      case :gen_tcp.send(socket, payload) do
+        :ok -> {:ok, socket}
+        {:error, reason} -> {:error, reason}
+      end
     end
   end
 

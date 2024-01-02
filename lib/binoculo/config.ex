@@ -26,11 +26,27 @@ defmodule Binoculo.Config do
     GenServer.call(__MODULE__, :get_output_file)
   end
 
+  def set_write_payload(payload) do
+    GenServer.cast(__MODULE__, {:set_write_payload, payload})
+  end
+
+  def get_write_payload() do
+    GenServer.call(__MODULE__, :get_write_payload)
+  end
+
   def handle_cast({:set_output_file, file_name}, state) do
     {:noreply, Map.put(state, :output_file, file_name)}
   end
 
+  def handle_cast({:set_write_payload, payload}, state) do
+    {:noreply, Map.put(state, :write_payload, payload)}
+  end
+
   def handle_call(:get_output_file, _from, state) do
     {:reply, state[:output_file], state}
+  end
+
+  def handle_call(:get_write_payload, _from, state) do
+    {:reply, state[:write_payload], state}
   end
 end

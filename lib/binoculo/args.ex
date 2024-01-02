@@ -56,7 +56,7 @@ defmodule Binoculo.Args do
           long: "--output",
           help: "Output file",
           parser: fn output ->
-            case File.open("output/#{output}", [:write]) do
+            case File.open("output/#{output}", [:append]) do
               {:ok, _file} ->
                 {:ok, output}
 
@@ -64,7 +64,13 @@ defmodule Binoculo.Args do
                 {:error, "invalid output file"}
             end
           end
-        ]
+        ],
+        write: [
+          value_name: "write",
+          short: "-w",
+          long: "--write",
+          help: "Write cutom payload to socket, e.g: GET / HTTP/1.1"
+        ],
       ]
     )
     |> Optimus.parse!(argv)
