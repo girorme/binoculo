@@ -12,10 +12,12 @@ defmodule Binoculo do
     output = get_in(parsed_args, [Access.key!(:options), Access.key!(:output)])
     port_count = Enum.count(ports)
     write_payload = get_in(parsed_args, [Access.key!(:options), Access.key!(:write)])
+    read_payload = get_in(parsed_args, [Access.key!(:options), Access.key!(:read)])
 
     # TODO: improve config set to pipe configs above
     Config.set_output_file(output)
     Config.set_write_payload(write_payload)
+    Config.set_read_payload(read_payload)
 
     {:ok, qty_to_run} = Maestro.start_get_banner_workers(host_notation, ports)
 

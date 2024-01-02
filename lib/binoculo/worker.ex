@@ -67,6 +67,7 @@ defmodule Binoculo.Worker do
             :ok -> {:ok, socket}
             {:error, reason} -> {:error, reason}
           end
+
         {:error, reason} ->
           {:error, reason}
       end

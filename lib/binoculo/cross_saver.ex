@@ -5,6 +5,8 @@ defmodule Binoculo.CrossSaver do
 
   alias Binoculo.{Config, Results, Util}
 
+  # TODO: Add save to msearch
+
   def save_results() do
     check_and_save_to_file()
   end
@@ -26,9 +28,23 @@ defmodule Binoculo.CrossSaver do
   defp save_to_file(true) do
     results =
       Results.get_finished()
-      |> Enum.map(&Util.host_info_to_text_template/1)
+      |> check_and_filter_read_payload()
+
+    results = Enum.map(results, &Util.host_info_to_text_template/1)
 
     Config.get_output_file()
     |> File.write(results, [:append])
+  end
+
+  defp check_and_filter_read_payload(results) do
+    case Config.get_read_payload() do
+      nil ->
+        results
+
+      read_payload ->
+        Enum.filter(results, fn %{response: response} ->
+          Regex.match?(~r/#{read_payload}/i, response)
+        end)
+    end
   end
 end

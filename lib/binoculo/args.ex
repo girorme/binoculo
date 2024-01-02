@@ -26,7 +26,6 @@ defmodule Binoculo.Args do
       options: [
         host_notation: [
           value_name: "host_notation",
-          short: "-r",
           long: "--range",
           help: "CIDR or IP range: 192.168.1.0/24 or 192.168.1.0..192.168.1.255",
           parser: fn notation ->
@@ -71,6 +70,12 @@ defmodule Binoculo.Args do
           long: "--write",
           help: "Write cutom payload to socket, e.g: GET / HTTP/1.1"
         ],
+        read: [
+          value_name: "read",
+          short: "-r",
+          long: "--read",
+          help: "Save only responses that match with this string, e.g: Apache"
+        ]
       ]
     )
     |> Optimus.parse!(argv)
