@@ -73,22 +73,17 @@ $ ./binoculo --range 192.168.101.1/24 -p 80 --output result.txt -w "GET / HTTP/1
 $ ./binoculo --range 192.168.101.1/24 -p 80 --output result.txt -w "HEAD / HTTP/1.1" -r "Apache"
 ```
 
-- For the next features, you need to execute:
-
+### Meilisearch integration ⭐
 ```
 $ ./binoculo --meili
 ```
 
 The command above launches a meilisearch container!
 
-- Now you can get/filter the results via a dashboard (wip) using the `--dashboard` flag:
-```
-$ ./binoculo --range 192.168.101.1/24 -p 21,22 --output my_result.txt --dashboard
-```
+_You can now access `localhost:7700` to get results via meilisearch_
 
-Finishing the scan above visit `localhost:3000` to see a page with the results (collected from meilisearch)
-
-_You can also access `localhost:7700` to get results via meilisearch (elasticsearch like)_
+**Meilisearch print**
+![image](https://github.com/girorme/binoculo/assets/54730507/8654ec1e-5562-41f5-928d-4e8033e139e6)
 
 ---
 
