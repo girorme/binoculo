@@ -26,7 +26,6 @@ defmodule Binoculo.Args do
       options: [
         host_notation: [
           value_name: "host_notation",
-          short: "-r",
           long: "--range",
           help: "CIDR or IP range: 192.168.1.0/24 or 192.168.1.0..192.168.1.255",
           parser: fn notation ->
@@ -56,7 +55,7 @@ defmodule Binoculo.Args do
           long: "--output",
           help: "Output file",
           parser: fn output ->
-            case File.open("output/#{output}", [:write]) do
+            case File.open("output/#{output}", [:append]) do
               {:ok, _file} ->
                 {:ok, output}
 
@@ -64,6 +63,18 @@ defmodule Binoculo.Args do
                 {:error, "invalid output file"}
             end
           end
+        ],
+        write: [
+          value_name: "write",
+          short: "-w",
+          long: "--write",
+          help: "Write cutom payload to socket, e.g: GET / HTTP/1.1"
+        ],
+        read: [
+          value_name: "read",
+          short: "-r",
+          long: "--read",
+          help: "Save only responses that match with this string, e.g: Apache"
         ]
       ]
     )
