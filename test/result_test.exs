@@ -45,4 +45,15 @@ defmodule ResultTest do
       assert host_info_ut.host not in finished
     end
   end
+
+  describe "db lifecycle" do
+    test "should db start initalized" do
+      assert Results.is_started?() == true
+    end
+
+    test "should destroy db" do
+      Results.delete_db()
+      assert Results.is_started?() == false
+    end
+  end
 end
