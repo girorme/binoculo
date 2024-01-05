@@ -8,7 +8,8 @@ defmodule Binoculo.MixProject do
       elixir: "~> 1.14",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
-      test_coverage: [ignore_modules: [Binoculo]],
+      test_coverage: [tool: ExCoveralls, ignore_modules: [Binoculo]],
+      preferred_cli_env: [coveralls: :test, "coveralls.html": :test],
       escript: escript()
     ]
   end
@@ -37,7 +38,8 @@ defmodule Binoculo.MixProject do
       {:meilisearch, "~> 0.20.0"},
       {:dialyxir, "~> 1.3", only: [:dev], runtime: false},
       {:optimus, "~> 0.2"},
-      {:progress_bar, "> 0.0.0"}
+      {:progress_bar, "> 0.0.0"},
+      {:excoveralls, "~> 0.18", only: :test}
     ]
   end
 end
