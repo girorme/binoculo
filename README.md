@@ -1,4 +1,5 @@
 ![main-ci](https://github.com/girorme/binoculo-daemon/actions/workflows/elixir.yml/badge.svg?branch=main)
+[![Coverage Status](https://coveralls.io/repos/github/girorme/binoculo/badge.svg?branch=main)](https://coveralls.io/github/girorme/binoculo?branch=main)
 [![License](https://img.shields.io/badge/License-MIT-blue)](https://github.com/girorme/binoculo-daemon/blob/main/LICENSE)
 
 ![logo](repo_assets/binoculo-logo.png)
