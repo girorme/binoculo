@@ -26,7 +26,7 @@ defmodule UtilTest do
   end
 
   test "should return banner and version" do
-    assert Regex.match?(~r/#{Util.version()}/, Util.banner())
+    assert Util.banner() =~ ~r/#{Util.version()}/
   end
 
   test "should return a map when valid response without header is passed" do
