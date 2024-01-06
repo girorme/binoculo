@@ -35,7 +35,9 @@ defmodule UtilTest do
   end
 
   test "should return a map when valid response is passed" do
-    header = "HTTP/1.0 302 Moved Temporarily\r\nDate: Sat, 06 Jan 2024 15:55:33 GMT\r\nServer: Boa/0.93.15\r\nX-Frame-Options: SAMEORIGIN\r\nConnection: close\r\nContent-Type: text/html\r\nLocation: /admin/login.asp\r\n\r\n"
+    header =
+      "HTTP/1.0 302 Moved Temporarily\r\nDate: Sat, 06 Jan 2024 15:55:33 GMT\r\nServer: Boa/0.93.15\r\nX-Frame-Options: SAMEORIGIN\r\nConnection: close\r\nContent-Type: text/html\r\nLocation: /admin/login.asp\r\n\r\n"
+
     assert is_map(Util.format_http_response(header))
   end
 
@@ -46,8 +48,7 @@ defmodule UtilTest do
       response: "ok"
     }
 
-    expected_template =
-    """
+    expected_template = """
     --=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--
     Host: #{host_info[:host]}
     Port: #{host_info[:port]}
@@ -56,6 +57,6 @@ defmodule UtilTest do
     --=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--
     """
 
-  assert expected_template == Util.host_info_to_text_template(host_info)
+    assert expected_template == Util.host_info_to_text_template(host_info)
   end
 end
