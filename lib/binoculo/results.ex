@@ -10,10 +10,16 @@ defmodule Binoculo.Results do
 
   @spec init_db() :: boolean()
   def init_db() do
-    :ets.new(@table_name, [:set, :public, :named_table])
-    :ets.insert(@table_name, {@running_key, []})
-    :ets.insert(@table_name, {@finished_key, []})
-    :ets.insert(@table_name, {@qty_running_key, 0})
+    case is_started?() do
+      true ->
+        :already_started
+
+      _ ->
+        :ets.new(@table_name, [:set, :public, :named_table])
+        :ets.insert(@table_name, {@running_key, []})
+        :ets.insert(@table_name, {@finished_key, []})
+        :ets.insert(@table_name, {@qty_running_key, 0})
+    end
   end
 
   def delete_db(), do: :ets.delete(@table_name)

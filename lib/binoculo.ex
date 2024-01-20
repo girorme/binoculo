@@ -18,6 +18,7 @@ defmodule Binoculo do
     Config.set_output_file(output)
     Config.set_write_payload(write_payload)
     Config.set_read_payload(read_payload)
+    Config.start_maestro()
 
     {:ok, qty_to_run} = Maestro.start_get_banner_workers(host_notation, ports)
 
