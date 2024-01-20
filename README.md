@@ -89,7 +89,7 @@ _You can now access `localhost:7700` to get results via meilisearch_
 ---
 
 ## Update
-To update to the latest version use the command bellow:
+To update to the latest version use the command below:
 
 > ./binoculo -u
 
