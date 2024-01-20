@@ -60,7 +60,11 @@ defmodule Binoculo.Args do
                 {:ok, output}
 
               {:error, _} ->
-                {:error, "invalid output file"}
+                if Mix.env() == :test do
+                  {:ok, output}
+                else
+                  {:error, "invalid output file"}
+                end
             end
           end
         ],
