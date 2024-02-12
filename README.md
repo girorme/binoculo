@@ -2,12 +2,10 @@
 [![Coverage Status](https://coveralls.io/repos/github/girorme/binoculo/badge.svg?branch=main&a=1)](https://coveralls.io/github/girorme/binoculo?branch=main)
 [![License](https://img.shields.io/badge/License-MIT-blue)](https://github.com/girorme/binoculo-daemon/blob/main/LICENSE)
 
-![image](https://github.com/girorme/binoculo/assets/54730507/e62fd0fa-753e-4d93-a46c-b94916a01ebc)
+![usage](repo_assets/logo.png)
 
 
 Binoculo is a lightning-fast banner grabbing tool built with Elixir, designed to swiftly retrieve service banners from target hosts. With its high-speed functionality, Binoculo efficiently collects service information across multiple ports, aiding in network reconnaissance and analysis.
-
-![usage](repo_assets/logo.png)
 
 ## Requirements
 - Docker
