@@ -7,7 +7,7 @@
 
 Binoculo is a lightning-fast banner grabbing tool built with Elixir, designed to swiftly retrieve service banners from target hosts. With its high-speed functionality, Binoculo efficiently collects service information across multiple ports, aiding in network reconnaissance and analysis.
 
-![usage](repo_assets/binoculo_usage.gif)
+![usage](repo_assets/logo.png)
 
 ## Requirements
 - Docker
