@@ -18,25 +18,28 @@ defmodule Binoculo.Config do
     {:ok, state}
   end
 
-  def set_output_file(file_name) do
-    file_name = "output/#{file_name}"
+  def set_output_file(%{output_file: file_name} = config) do
+    file_name = "#{file_name}"
     GenServer.cast(__MODULE__, {:set_output_file, file_name})
+    config
   end
 
   def get_output_file() do
     GenServer.call(__MODULE__, :get_output_file)
   end
 
-  def set_write_payload(payload) do
+  def set_write_payload(%{write_payload: payload} = config) do
     GenServer.cast(__MODULE__, {:set_write_payload, payload})
+    config
   end
 
   def get_write_payload() do
     GenServer.call(__MODULE__, :get_write_payload)
   end
 
-  def set_read_payload(payload) do
+  def set_read_payload(%{read_payload: payload} = config) do
     GenServer.cast(__MODULE__, {:set_read_payload, payload})
+    config
   end
 
   def get_read_payload() do

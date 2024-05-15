@@ -14,10 +14,17 @@ defmodule Binoculo do
     write_payload = get_in(parsed_args, [Access.key!(:options), Access.key!(:write)])
     read_payload = get_in(parsed_args, [Access.key!(:options), Access.key!(:read)])
 
-    # TODO: improve config set to pipe configs above
-    Config.set_output_file(output)
-    Config.set_write_payload(write_payload)
-    Config.set_read_payload(read_payload)
+    config = %{
+      output_file: output,
+      write_payload: write_payload,
+      read_payload: read_payload
+    }
+
+    config
+    |> Config.set_output_file()
+    |> Config.set_write_payload()
+    |> Config.set_read_payload()
+
     Config.start_maestro()
 
     {:ok, qty_to_run} = Maestro.start_get_banner_workers(host_notation, ports)

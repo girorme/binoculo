@@ -59,7 +59,7 @@ defmodule WorkerTest do
     test "should get banner with custom payload" do
       host_ut = "127.0.0.1"
       port_ut_http = 8089
-      Config.set_write_payload("GET / HTTP/1.1\r\nHost: #{host_ut}\r\n\r\n")
+      Config.set_write_payload(%{write_payload: "GET / HTTP/1.1\r\nHost: #{host_ut}\r\n\r\n"})
 
       spawn(Server, :start, [port_ut_http, "hello server"])
       Process.sleep(:timer.seconds(1))
@@ -72,7 +72,7 @@ defmodule WorkerTest do
     test "should get banner with nil payload" do
       host_ut = "127.0.0.1"
       port_ut_http = 8088
-      Config.set_write_payload(nil)
+      Config.set_write_payload(%{write_payload: nil})
 
       spawn(Server, :start, [port_ut_http, "hello server"])
       Process.sleep(:timer.seconds(1))
@@ -85,7 +85,7 @@ defmodule WorkerTest do
     test "should get errors sending payload after socket close" do
       host_ut = "127.0.0.1"
       port_ut_http = 8081
-      Config.set_write_payload("foobar")
+      Config.set_write_payload(%{write_payload: "foobar"})
 
       spawn(Server, :start, [port_ut_http, "hello server"])
       Process.sleep(:timer.seconds(1))
