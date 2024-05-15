@@ -29,7 +29,7 @@ defmodule Binoculo do
     IO.puts("[*] Total hosts to scan: #{qty_to_run}, with #{port_count} ports each")
     IO.puts("Waiting initialisation of workers and so on...")
 
-    Process.sleep(:timer.seconds(2))
+    wait_for_workers()
 
     IO.puts("Working...")
 
@@ -48,6 +48,13 @@ defmodule Binoculo do
     case Results.get_qty_running() do
       0 -> :finished
       _ -> progress()
+    end
+  end
+
+  defp wait_for_workers() do
+    if Results.get_qty_running() == 0 do
+      Process.sleep(:timer.seconds(1))
+      wait_for_workers()
     end
   end
 end
