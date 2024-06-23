@@ -3,7 +3,7 @@ defmodule Binoculo.CrossSaver do
   Save to multiple sources
   """
 
-  alias Binoculo.{Config, Msearch, Results, Util}
+  alias Binoculo.{Config, Msearch, Refiner, Results, Util}
 
   def save_results() do
     check_and_save_to_file()
@@ -60,9 +60,7 @@ defmodule Binoculo.CrossSaver do
         results
 
       read_payload ->
-        Enum.filter(results, fn %{response: response} ->
-          Regex.match?(~r/#{read_payload}/i, response)
-        end)
+        Refiner.find_occurrences_in_responses(read_payload, results)
     end
   end
 end

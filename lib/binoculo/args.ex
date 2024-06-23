@@ -78,7 +78,13 @@ defmodule Binoculo.Args do
           value_name: "read",
           short: "-r",
           long: "--read",
-          help: "Save only responses that match with this string, e.g: Apache"
+          help: "Save only responses that match with this string, e.g: Apache | nginx,php",
+          parser: fn read_payload ->
+            case String.contains?(read_payload, ",") do
+              true -> {:ok, String.split(read_payload, ",")}
+              false -> {:ok, read_payload}
+            end
+          end
         ]
       ]
     )
