@@ -73,6 +73,11 @@ $ ./binoculo --range 192.168.101.1/24 -p 80 --output result.txt -w "GET / HTTP/1
 $ ./binoculo --range 192.168.101.1/24 -p 80 --output result.txt -w "HEAD / HTTP/1.1" -r "Apache"
 ```
 
+- Save only matching multiple criteria (AND operator) (inspired by pnscan :bowtie:)
+```
+$ ./binoculo --range 192.168.101.1/24 -p 80 --output result.txt -w "HEAD / HTTP/1.1" -r "Apache,php"
+```
+
 ### Meilisearch integration ⭐
 ```
 $ ./binoculo --meili
