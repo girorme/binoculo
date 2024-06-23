@@ -19,6 +19,9 @@ defmodule RefinerTest do
     test "should find occurrences in responses with multiple patterns (AND)" do
       assert [%{response: "hello and world"}] ==
                Refiner.find_occurrences_in_responses(["hello", "world"], @responses)
+
+      assert [%{response: "test xoo"}] ==
+               Refiner.find_occurrences_in_responses(["xoo"], @responses)
     end
   end
 end
