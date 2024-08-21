@@ -29,7 +29,7 @@ HTTP Write
 
 ## Commands
 ```
-Binoculo: You Know, for Banner Grabbing! Version: 1.1.0
+Binoculo: You Know, for Banner Grabbing! Version: 1.1.1
 Author: Girorme <g1r0rm3@gmail.com>
 A banner grabbing tool
 
