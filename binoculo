@@ -7,8 +7,8 @@ NC='\033[0m' # No Color
 NETWORK_NAME="binoculo-network"
 MEILISEARCH_CONTAINER="meilisearch"
 DASHBOARD_CONTAINER="binoculo-dashboard"
-DOCKER_IMAGE="ghcr.io/girorme/binoculo:main"
-DASHBOARD_DOCKER_IMAGE="ghcr.io/girorme/binoculo-dashboard:main"
+DOCKER_IMAGE="ghcr.io/girorme/binoculo:latest"
+DASHBOARD_DOCKER_IMAGE="ghcr.io/girorme/binoculo-dashboard:latest"
 
 # Build binoculo locally (needs elixir >= 1.14)
 build_tool() {
