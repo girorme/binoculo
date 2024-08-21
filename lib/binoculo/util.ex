@@ -54,9 +54,19 @@ defmodule Binoculo.Util do
     [http_code | key_value] = String.split(header_and_body[:header], "\r\n")
 
     resp =
-      for session <- key_value, into: %{} do
-        [key, value] = String.split(session, ": ", parts: 2)
-        {key, value}
+      if key_value not in [[], [""], nil] do
+        for session <- key_value, into: %{} do
+          session = unless String.contains?(session, ": ") do
+            session <> ": "
+          else
+            session
+          end
+
+          [key, value] = String.split(session, ": ", parts: 2)
+          {key, value}
+        end
+      else
+        %{}
       end
 
     Map.put(
@@ -79,7 +89,7 @@ defmodule Binoculo.Util do
     """
   end
 
-  defp parse_header_and_body(http_response) do
+  def parse_header_and_body(http_response) do
     case String.split(http_response, "\r\n\r\n") do
       [header, body] -> %{header: header, body: body}
       header -> %{header: Enum.at(header, 0), body: nil}
