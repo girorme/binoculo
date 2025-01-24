@@ -6,7 +6,7 @@ defmodule Binoculo do
   alias Binoculo.{Config, CrossSaver, Results, Util, Maestro, Args}
 
   def main(argv) do
-    parsed_args = Args.parse_args(argv)
+    {:ok, parsed_args} = Args.parse_args(argv)
     host_notation = get_in(parsed_args, [Access.key!(:options), Access.key!(:host_notation)])
     ports = get_in(parsed_args, [Access.key!(:options), Access.key!(:ports)])
     output = get_in(parsed_args, [Access.key!(:options), Access.key!(:output)])

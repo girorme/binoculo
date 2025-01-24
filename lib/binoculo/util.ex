@@ -56,11 +56,12 @@ defmodule Binoculo.Util do
     resp =
       if key_value not in [[], [""], nil] do
         for session <- key_value, into: %{} do
-          session = unless String.contains?(session, ": ") do
-            session <> ": "
-          else
-            session
-          end
+          session =
+            unless String.contains?(session, ": ") do
+              session <> ": "
+            else
+              session
+            end
 
           [key, value] = String.split(session, ": ", parts: 2)
           {key, value}
