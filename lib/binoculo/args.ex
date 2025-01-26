@@ -85,7 +85,7 @@ defmodule Binoculo.Args do
         ]
       )
 
-    case String.to_atom(System.get_env("MIX_ENV", "prod")) do
+    case String.to_atom(System.get_env("MIX_ENV", "test")) do
       :test ->
         Optimus.parse(optimus, argv)
 
