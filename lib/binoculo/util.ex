@@ -54,24 +54,15 @@ defmodule Binoculo.Util do
     [http_code | key_value] = String.split(header_and_body[:header], "\r\n")
 
     resp =
-      if key_value not in [[], [""], nil] do
+      unless empty?(key_value)  do
         for session <- key_value, into: %{} do
-          session =
-            unless String.contains?(session, ": ") do
-              session <> ": "
-            else
-              session
-            end
-
           [key, value] = String.split(session, ": ", parts: 2)
           {key, value}
         end
-      else
-        %{}
       end
 
     Map.put(
-      resp,
+      resp || %{},
       "Code",
       http_code
     )
@@ -96,4 +87,10 @@ defmodule Binoculo.Util do
       header -> %{header: Enum.at(header, 0), body: nil}
     end
   end
+
+  def empty?(nil), do: true
+  def empty?(val) when val == %{}, do: true
+  def empty?(val) when val == [], do: true
+  def empty?(val) when is_binary(val), do: String.trim(val) == ""
+  def empty?(_val), do: false
 end
