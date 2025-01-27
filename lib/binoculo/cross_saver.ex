@@ -24,6 +24,9 @@ defmodule Binoculo.CrossSaver do
 
     results = Enum.map(results, &Util.host_info_to_text_template/1)
 
+    # check if output dir exists and create it if not
+    File.mkdir_p!("output")
+
     Config.get_output_file()
     |> then(fn file -> "output/#{file}" end)
     |> File.write(results, [:append])
