@@ -1,5 +1,5 @@
 defmodule CrossSaverTest do
-  use ExUnit.Case, async: true
+  use ExUnit.Case, async: false
 
   alias Binoculo.{CrossSaver, Config, Results}
 
@@ -12,18 +12,15 @@ defmodule CrossSaverTest do
 
   describe "save_results/0" do
     test "should save results to file" do
-      Config.set_output_file(%{output_file: "sut_result"})
+      Config.set_output_file(%{output_file: "sut_result", read_payload: nil})
       assert :ok = CrossSaver.save_results()
       assert File.exists?(@output_file)
 
-      on_exit(fn ->
-        File.rm(@output_file)
-      end)
-    end
-
-    test "should save results and check read payload" do
       Config.set_read_payload(%{read_payload: "Apache"})
       assert :ok = CrossSaver.save_results()
+      assert File.exists?(@output_file)
+
+      File.rm(@output_file)
     end
   end
 end

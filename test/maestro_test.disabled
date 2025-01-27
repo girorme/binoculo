@@ -26,5 +26,9 @@ defmodule MaestroTest do
       {:noreply, _state} =
         Maestro.handle_info({self(), {:ok, %{host: "127.0.0.1", port: 80}}}, %{})
     end
+
+    test "should do nothing" do
+      {:noreply, _state} = Maestro.handle_info(:msg, %{})
+    end
   end
 end
