@@ -16,13 +16,15 @@ defmodule MaestroTest do
 
   describe "handle_cast/2" do
     test "should start worker" do
-      {:noreply, _state} = Maestro.handle_cast({:start_worker, %{host: "127.0.0.1", port: 80}}, %{})
+      {:noreply, _state} =
+        Maestro.handle_cast({:start_worker, %{host: "127.0.0.1", port: 80}}, %{})
     end
   end
 
   describe "handle_info/2" do
     test "should finish item" do
-      {:noreply, _state} = Maestro.handle_info({self(), {:ok, %{host: "127.0.0.1", port: 80}}}, %{})
+      {:noreply, _state} =
+        Maestro.handle_info({self(), {:ok, %{host: "127.0.0.1", port: 80}}}, %{})
     end
   end
 end

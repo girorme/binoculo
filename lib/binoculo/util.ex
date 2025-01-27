@@ -54,7 +54,7 @@ defmodule Binoculo.Util do
     [http_code | key_value] = String.split(header_and_body[:header], "\r\n")
 
     resp =
-      unless empty?(key_value)  do
+      unless empty?(key_value) do
         for session <- key_value, into: %{} do
           [key, value] = String.split(session, ": ", parts: 2)
           {key, value}

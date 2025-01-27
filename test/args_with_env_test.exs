@@ -9,8 +9,6 @@ defmodule ArgsWithEnvTest do
 
   describe "parse_args/1" do
     test "should work with env var != test" do
-
-
       args = ["--range", "192.168.101.1", "-p", "80", "--output", "my_file.txt"]
       assert {:ok, _parsed_args} = Args.parse_args(args)
     end
