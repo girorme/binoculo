@@ -1,5 +1,6 @@
 {
     "skip_files": [
-        "lib/binoculo.ex"
+        "lib/binoculo.ex",
+        "lib/binoculo/maestro.ex"
     ]
 }

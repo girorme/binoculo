@@ -15,14 +15,7 @@ defmodule Binoculo.CrossSaver do
     |> save_to_file()
   end
 
-  defp save_to_file_enabled?(), do: true
-
-  defp save_to_file(response) when is_binary(response) do
-    String.to_atom(response)
-    |> save_to_file()
-  end
-
-  defp save_to_file(false), do: :noop
+  def save_to_file_enabled?(), do: true
 
   defp save_to_file(true) do
     results =
@@ -30,6 +23,9 @@ defmodule Binoculo.CrossSaver do
       |> check_and_filter_read_payload()
 
     results = Enum.map(results, &Util.host_info_to_text_template/1)
+
+    # check if output dir exists and create it if not
+    File.mkdir_p!("output")
 
     Config.get_output_file()
     |> then(fn file -> "output/#{file}" end)

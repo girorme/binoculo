@@ -15,6 +15,8 @@ defmodule ResultTest do
 
       running = Results.get_running() |> Enum.map(fn %{host: host} -> host end)
       assert host_info_ut.host in running
+
+      assert Results.get_qty_running() == 1
     end
 
     test "should finish and remove item from progress" do

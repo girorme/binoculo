@@ -39,7 +39,8 @@ defmodule Binoculo.MixProject do
       {:dialyxir, "~> 1.3", only: [:dev], runtime: false},
       {:optimus, "~> 0.2"},
       {:progress_bar, "> 0.0.0"},
-      {:excoveralls, "~> 0.18", only: :test}
+      {:excoveralls, "~> 0.18", only: :test},
+      {:mock, "~> 0.3.0", only: :test}
     ]
   end
 end

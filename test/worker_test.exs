@@ -69,6 +69,19 @@ defmodule WorkerTest do
       assert response =~ ~r/hello server/i
     end
 
+    test "should get banner with custom payload without \r\n" do
+      host_ut = "127.0.0.1"
+      port_ut_http = 8087
+      Config.set_write_payload(%{write_payload: "GET / HTTP/1.1\r\nHost: #{host_ut}"})
+
+      spawn(Server, :start, [port_ut_http, "hello server"])
+      Process.sleep(:timer.seconds(1))
+
+      {:ok, %{response: response, port: port}} = Worker.get_banner(host_ut, port_ut_http)
+      assert port_ut_http == port
+      assert response =~ ~r/hello server/i
+    end
+
     test "should get banner with nil payload" do
       host_ut = "127.0.0.1"
       port_ut_http = 8088
