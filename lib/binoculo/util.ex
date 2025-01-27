@@ -88,9 +88,6 @@ defmodule Binoculo.Util do
     end
   end
 
-  def empty?(nil), do: true
-  def empty?(val) when val == %{}, do: true
   def empty?(val) when val == [], do: true
-  def empty?(val) when is_binary(val), do: String.trim(val) == ""
   def empty?(_val), do: false
 end

@@ -41,6 +41,13 @@ defmodule UtilTest do
     assert is_map(Util.format_http_response(header))
   end
 
+  test "should return a map when valid response is passed only with header" do
+    header =
+      "HTTP/1.0 302 Moved Temporarily\r\nDate: Sat, 06 Jan 2024 15:55:33 GMT\r\nServer: Boa/0.93.15\r\nX-Frame-Options: SAMEORIGIN\r\nConnection: close\r\nContent-Type: text/html"
+
+    assert is_map(Util.format_http_response(header))
+  end
+
   test "should return a valid text template from host_info map" do
     host_info = %{
       host: "localhost",
