@@ -31,5 +31,6 @@ defmodule ConfigTest do
   test "should start maestro via config module" do
     assert {:ok, pid} = Config.start_maestro()
     assert is_pid(pid)
+    Process.exit(pid, :kill)
   end
 end
