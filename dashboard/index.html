@@ -15,27 +15,37 @@
     <link rel="stylesheet" href="./src/index.css" />
     <link rel="stylesheet" href="./src/app.css" />
 
-    <title>Binoculo dashboard</title>
+    <title>Binoculo Dashboard</title>
   </head>
-  <body>
-    <div class="ais-InstantSearch">
-      <h1>Binoculo dashboard</h1>
+  <body class="bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200">
+    <div class="ais-InstantSearch max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h1 class="text-4xl font-bold py-6 text-center">Binoculo Dashboard</h1>
 
-      <div class="left-panel">
-        <div id="clear-refinements"></div>
+      <div class="">
+        <!-- Left panel (filters) -->
+        <div class="left-panel md:col-span-1 space-y-4 sticky top-0 self-start">
+          <div id="clear-refinements"></div>
 
-        <h2>Ports</h2>
-        <div class="p-2" id="port-list"></div>
-        <h2>Products (header based)</h2>
-        <div class="p-2" id="product-list"></div>
-      </div>
+          <div>
+            <h2 class="text-xl font-semibold mb-2">Ports</h2>
+            <div class="p-2" id="port-list"></div>
+          </div>
 
-      <div class="right-panel">
-        <div id="searchbox" class="ais-SearchBox"></div>
-        <div class="break-words line-clamp-1" id="hits"></div>
-        <div id="pagination"></div>
+          <div>
+            <h2 class="text-xl font-semibold mb-2">Technologies</h2>
+            <div class="p-2" id="technology-list"></div>
+          </div>
+        </div>
+
+        <!-- Right panel (results) -->
+        <div class="right-panel md:col-span-3 space-y-4">
+          <div id="searchbox" class="ais-SearchBox"></div>
+          <div id="pagination"></div>
+          <div id="hits" class=""></div>
+        </div>
       </div>
     </div>
+
     <script src="https://cdn.jsdelivr.net/npm/instantsearch.js@4"></script>
     <script src="./src/app.js"></script>
   </body>
