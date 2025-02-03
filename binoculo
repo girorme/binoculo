@@ -29,6 +29,8 @@ start_dashboard() {
         docker run -d --name $DASHBOARD_CONTAINER --network $NETWORK_NAME -p 3000:1234 $DASHBOARD_DOCKER_IMAGE
         echo -e "${GREEN}Dashboard started.${NC}"
     fi
+
+    echo -e "${GREEN} You can access it at http://localhost:3000${NC}"
 }
 
 start_meilisearch() {
@@ -40,8 +42,14 @@ start_meilisearch() {
         docker rm $MEILISEARCH_CONTAINER
         echo -e "${YELLOW}Starting Meilisearch container...${NC}"
         docker run -d --name $MEILISEARCH_CONTAINER --network $NETWORK_NAME -p 7700:7700 -v "$(pwd)/meili_data:/meili_data" getmeili/meilisearch:v1.1
+        
+        chmod +x prepare-meilisearch-filters.sh
+        ./prepare-meilisearch-filters.sh
+
         echo -e "${GREEN}Meilisearch started.${NC}"
     fi
+
+    echo -e "${GREEN} You can access it at http://localhost:7700${NC}"
 }
 
 update() {
@@ -70,6 +78,7 @@ if [[ "$1" == "--dashboard" ]]; then
     start_meilisearch
     start_dashboard
     shift
+    exit 0
 fi
 
 # Check if the network exists
