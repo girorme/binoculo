@@ -49,11 +49,11 @@ search.addWidgets([
             </a>
             <div class="mb-3 text-sm text-gray-500 dark:text-gray-400">
               ${hit.http_response
-                ? Object.entries(hit.http_response).map(
-                    ([key, value]) =>
-                      `<span class="font-bold">${key}:</span> ${value}`
+                ? Object.entries(hit._highlightResult.http_response).map(
+                    ([key, field]) =>
+                      `<span class="font-bold">${key}:</span> ${field.value}`
                   ).join("<br/>")
-                : hit.response}
+                : hit._highlightResult.response.value}
             </div>
           </div>
         `;
