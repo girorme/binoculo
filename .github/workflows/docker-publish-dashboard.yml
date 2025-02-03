@@ -3,7 +3,7 @@ name: Build Docker dashboard image
 on:
   push:
     tags:
-      - "disabled"
+      - "*"
 
 env:
   DOCKER_IMAGE: ghcr.io/girorme/binoculo-dashboard
