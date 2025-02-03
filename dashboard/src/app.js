@@ -35,8 +35,6 @@ search.addWidgets([
           .map((item) => `<p>${item}</p>`)
           .join("");
 
-        if (item.response.length > 10)
-          item.response = item.response.substring(0, 250) + "...";
         return item;
       });
     },
