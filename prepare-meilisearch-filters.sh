@@ -10,7 +10,8 @@ if [ "$status_code" != "200" ]; then
   echo "Preparing meilisearch to facet results..."
 
   # Run the PUT request to update filterable attributes
-  curl --request PUT \
+  curl --silent --output /dev/null --write-out "" \
+    --request PUT \
     --url http://localhost:7700/indexes/hosts/settings/filterable-attributes \
     --header 'Content-Type: application/json' \
     --data '[
