@@ -14,6 +14,7 @@ on:
     paths-ignore:
          - '.github/workflows/*'
          - 'Dockerfile'
+         - 'README.md'
 
 permissions:
   contents: read
