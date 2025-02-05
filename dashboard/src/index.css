@@ -5,6 +5,50 @@ h1 {
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
-    Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+    "Segoe UI Symbol";
+}
+
+h1 {
+  font-family: 'Poppins', sans-serif;
+}
+
+.ais-InstantSearch {
+  max-width: 960px;
+  overflow: hidden;
+  margin: 0 auto;
+}
+
+.left-panel {
+  padding-right: 20px;
+}
+
+.right-panel {
+  margin-left: 210px;
+}
+
+.ais-Hits-item {
+  margin-bottom: 1rem;
+}
+
+.ais-Hits-item img {
+  margin-right: 1em;
+  width: 100%;
+  height: 100%;
+  margin-bottom: 0.5em;
+}
+
+.hit-name {
+  margin-bottom: 0.5em;
+  font-weight: bold;
+}
+
+.hit-description {
+  font-size: 90%;
+  margin-bottom: 0.5em;
+}
+
+.hit-info {
+  font-size: 90%;
 }

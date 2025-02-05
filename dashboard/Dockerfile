@@ -1,11 +1,12 @@
-FROM node:12
+# Stage 1: Build stage with Node 18
+FROM node:18-alpine AS build
 
 WORKDIR /usr/src/app
-
 COPY package*.json ./
-RUN yarn install
+RUN npm install --production
 COPY . .
+RUN npm run build
 
-EXPOSE 1234
+FROM nginx
 
-ENTRYPOINT [ "npm", "run", "start" ]
+COPY --from=build /usr/src/app/dist /usr/share/nginx/html

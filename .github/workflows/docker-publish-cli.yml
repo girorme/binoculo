@@ -1,9 +1,10 @@
 name: Build Docker CLI image
 
 on:
-  push:
-    tags:
-      - "*"
+  workflow_dispatch:
+  #push:
+  #  tags:
+  #    - "*"
 
 env:
   DOCKER_IMAGE: ghcr.io/girorme/binoculo
