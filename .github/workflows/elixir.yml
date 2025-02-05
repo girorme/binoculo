@@ -11,6 +11,8 @@ on:
   push:
     branches:
       - main
+    paths-ignore:
+         - '.github/workflows/*'
 
 permissions:
   contents: read
