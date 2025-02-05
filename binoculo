@@ -7,8 +7,8 @@ NC='\033[0m' # No Color
 NETWORK_NAME="binoculo-network"
 MEILISEARCH_CONTAINER="meilisearch"
 DASHBOARD_CONTAINER="binoculo-dashboard"
-DOCKER_IMAGE="ghcr.io/girorme/binoculo:latest"
-DASHBOARD_DOCKER_IMAGE="ghcr.io/girorme/binoculo-dashboard:latest"
+DOCKER_IMAGE="ghcr.io/girorme/binoculo:main"
+DASHBOARD_DOCKER_IMAGE="ghcr.io/girorme/binoculo-dashboard:main"
 
 # Build binoculo locally (needs elixir >= 1.14)
 build_tool() {
@@ -26,7 +26,7 @@ start_dashboard() {
         # Run Meilisearch container if it's not running
         docker rm $DASHBOARD_CONTAINER
         echo -e "${YELLOW}Starting binoculo dashboard container...${NC}"
-        docker run -d --name $DASHBOARD_CONTAINER --network $NETWORK_NAME -p 3000:1234 $DASHBOARD_DOCKER_IMAGE
+        docker run -d --name $DASHBOARD_CONTAINER --network $NETWORK_NAME -p 3000:80 $DASHBOARD_DOCKER_IMAGE
         echo -e "${GREEN}Dashboard started.${NC}"
     fi
 
