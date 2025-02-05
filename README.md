@@ -17,7 +17,7 @@ A lightning-fast banner grabbing tool built with **Elixir**, designed to quickly
 - **Specific Banner Searches**: Perform targeted searches for specific service banners or versions.
 - **HTTP Write**: Send custom commands over HTTP to communicate with services and perform actions.
 
-### :cog: Requirements
+### Requirements
 - Docker
 - Optional: Elixir installed locally
 
