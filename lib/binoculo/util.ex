@@ -90,4 +90,53 @@ defmodule Binoculo.Util do
 
   def empty?(val) when val == [], do: true
   def empty?(_val), do: false
+
+  def parse_ports_notation(ports_notation) do
+    ports =
+      String.trim(ports_notation)
+      |> String.split(",")
+      |> Enum.map(fn port ->
+        case Regex.match?(~r/^\d+(-\d+)?$/, port) do
+          false -> {:error, port}
+          _ -> {:ok, port}
+        end
+      end)
+      |> Enum.split_with(fn {status, _port_value} -> status == :error end)
+
+    {invalid_ports, ports} = ports
+
+    if Enum.count(invalid_ports) > 0 do
+      {:error, "invalid port(s): #{inspect(invalid_ports)}"}
+    else
+      Enum.map(ports, fn {:ok, port} -> port end)
+      |> generate_port_range()
+    end
+  end
+
+  def generate_port_range(ports) do
+    ports
+    |> Enum.reduce_while({:ok, []}, fn port, {:ok, acc} ->
+      case parse_port(port) do
+        {:ok, port_list} -> {:cont, {:ok, acc ++ port_list}}
+        {:error, reason} -> {:halt, {:error, reason}}
+      end
+    end)
+  end
+
+  defp parse_port(port) do
+    case String.split(port, "-") do
+      [single_port] ->
+        {:ok, [String.to_integer(single_port)]}
+
+      [start_port, end_port] ->
+        start_port = String.to_integer(start_port)
+        end_port = String.to_integer(end_port)
+
+        if start_port <= end_port do
+          {:ok, Enum.to_list(start_port..end_port)}
+        else
+          {:error, "Invalid range: start port must be less than or equal to end port"}
+        end
+    end
+  end
 end
