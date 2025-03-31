@@ -5,9 +5,10 @@ defmodule Binoculo.Api.Service do
 
   alias Binoculo.{Util, Worker}
 
-  def get_banners(host_notation, ports) do
+  def get_banners(host_notation, ports, read) do
     {:ok, range} = Util.parse_range_or_cidr_notation(host_notation)
     {:ok, ports} = Util.parse_ports_notation(ports)
+    read_payload = parse_read_payload(read)
 
     range
     |> Stream.map(&IP.to_string/1)
@@ -27,10 +28,26 @@ defmodule Binoculo.Api.Service do
       {:error, _} -> []
     end)
     |> Stream.filter(fn
-      {:ok, _} -> true
-      {:error, _} -> false
+      {:ok, result} ->
+        if is_nil(read_payload) do
+          true
+        else
+          String.contains?(result.response, read_payload)
+        end
+
+      {:error, _} ->
+        false
     end)
     |> Stream.map(fn {:ok, result} -> result end)
     |> Enum.to_list()
+  end
+
+  def parse_read_payload(nil), do: nil
+
+  def parse_read_payload(read) do
+    case String.contains?(read, ",") do
+      true -> String.split(read, ",")
+      false -> read
+    end
   end
 end

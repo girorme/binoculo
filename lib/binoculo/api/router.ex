@@ -16,9 +16,10 @@ defmodule Binoculo.Api.Router do
 
     host_notation = params["host_notation"]
     ports = params["ports"]
+    read = params["read"]
 
     result =
-      Binoculo.Api.Service.get_banners(host_notation, ports)
+      Binoculo.Api.Service.get_banners(host_notation, ports, read)
       |> Poison.encode!()
 
     send_resp(conn, 200, result)
