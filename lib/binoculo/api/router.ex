@@ -17,12 +17,12 @@ defmodule Binoculo.Api.Router do
     host_notation = params["host_notation"]
     ports = params["ports"]
     read = params["read"]
+    page = String.to_integer(params["page"] || "1")
+    page_size = String.to_integer(params["page_size"] || "10")
 
-    result =
-      Binoculo.Api.Service.get_banners(host_notation, ports, read)
-      |> Poison.encode!()
+    result = Binoculo.Api.Service.get_banners(host_notation, ports, read, page, page_size)
 
-    send_resp(conn, 200, result)
+    send_resp(conn, 200, Jason.encode!(result))
   end
 
   match _ do
