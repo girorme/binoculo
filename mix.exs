@@ -40,7 +40,10 @@ defmodule Binoculo.MixProject do
       {:optimus, "~> 0.2"},
       {:progress_bar, "> 0.0.0"},
       {:excoveralls, "~> 0.18", only: :test},
-      {:mock, "~> 0.3.0", only: :test}
+      {:mock, "~> 0.3.0", only: :test},
+      # Add this line
+      {:plug_cowboy, "~> 2.5"},
+      {:poison, "~> 6.0"}
     ]
   end
 end

@@ -22,6 +22,12 @@ defmodule Binoculo.Args do
             short: "-v",
             help: "Verbosity level",
             multiple: true
+          ],
+          server: [
+            value_name: "server",
+            short: "-s",
+            long: "--server",
+            help: "Start API server"
           ]
         ],
         options: [
@@ -34,8 +40,7 @@ defmodule Binoculo.Args do
                 {:error, _} -> {:error, "invalid cidr or notation"}
                 {:ok, _} -> {:ok, notation}
               end
-            end,
-            required: true
+            end
           ],
           ports: [
             value_name: "port(s)",
@@ -47,8 +52,7 @@ defmodule Binoculo.Args do
                 {:error, _} -> {:error, "invalid port(s)"}
                 {:ok, port_parsed} -> {:ok, port_parsed}
               end
-            end,
-            required: true
+            end
           ],
           output: [
             value_name: "output",
