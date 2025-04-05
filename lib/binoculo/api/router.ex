@@ -2,7 +2,9 @@ defmodule Binoculo.Api.Router do
   @moduledoc false
 
   use Plug.Router
+  require Logger
 
+  plug(Plug.Logger)
   plug(:match)
   plug(:dispatch)
 
@@ -13,6 +15,8 @@ defmodule Binoculo.Api.Router do
   post "/start" do
     {:ok, body, conn} = Plug.Conn.read_body(conn)
     params = Jason.decode!(body)
+
+    Logger.info("Received data: #{inspect(params)}")
 
     host_notation = params["host_notation"]
     ports = params["ports"]
