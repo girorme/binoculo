@@ -2,6 +2,7 @@
     "skip_files": [
         "lib/binoculo.ex",
         "lib/binoculo/maestro.ex",
-        "lib/binoculo/msearch.ex"
+        "lib/binoculo/msearch.ex",
+        "lib/binoculo/api/*"
     ]
 }
