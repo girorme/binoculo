@@ -22,6 +22,9 @@ defmodule WorkerTest do
     nil_payload_pid = spawn(Server, :start, [@nil_payload_port, "hello server"])
     socket_close_pid = spawn(Server, :start, [@socket_close_port, "hello server"])
 
+    # Wait for the servers to start
+    :timer.sleep(100)
+
     on_exit(fn ->
       [
         ftp_pid,
