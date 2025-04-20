@@ -4,7 +4,7 @@ defmodule Binoculo.MixProject do
   def project do
     [
       app: :binoculo,
-      version: "1.2.0",
+      version: "1.3.0",
       elixir: "~> 1.14",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
@@ -40,7 +40,10 @@ defmodule Binoculo.MixProject do
       {:optimus, "~> 0.2"},
       {:progress_bar, "> 0.0.0"},
       {:excoveralls, "~> 0.18", only: :test},
-      {:mock, "~> 0.3.0", only: :test}
+      {:mock, "~> 0.3.0", only: :test},
+      # Add this line
+      {:plug_cowboy, "~> 2.5"},
+      {:poison, "~> 6.0"}
     ]
   end
 end

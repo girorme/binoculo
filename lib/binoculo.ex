@@ -4,9 +4,25 @@ defmodule Binoculo do
   """
 
   alias Binoculo.{Config, CrossSaver, Results, Util, Maestro, Args}
+  alias Binoculo.Api.Server
 
   def main(argv) do
     {:ok, parsed_args} = Args.parse_args(argv)
+
+    case get_in(parsed_args, [Access.key!(:flags), Access.key!(:server)]) do
+      nil -> init_cli(parsed_args)
+      _ -> start_server()
+    end
+  end
+
+  defp start_server do
+    IO.puts("Starting API server on port 4000")
+    # start the server
+    Server.start(:normal, [])
+    :timer.sleep(:infinity)
+  end
+
+  def init_cli(parsed_args) do
     host_notation = get_in(parsed_args, [Access.key!(:options), Access.key!(:host_notation)])
     ports = get_in(parsed_args, [Access.key!(:options), Access.key!(:ports)])
     output = get_in(parsed_args, [Access.key!(:options), Access.key!(:output)])

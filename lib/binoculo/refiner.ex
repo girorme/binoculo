@@ -1,4 +1,8 @@
 defmodule Binoculo.Refiner do
+  @moduledoc """
+  Refiner module to handle the filtering of results
+  """
+
   def find_occurrences_in_responses(patterns, responses) when is_list(patterns) do
     Enum.filter(responses, fn %{response: response} ->
       Enum.all?(patterns, fn pattern -> String.contains?(response, pattern) end)

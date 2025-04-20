@@ -22,6 +22,12 @@ defmodule Binoculo.Args do
             short: "-v",
             help: "Verbosity level",
             multiple: true
+          ],
+          server: [
+            value_name: "server",
+            short: "-s",
+            long: "--server",
+            help: "Start API server"
           ]
         ],
         options: [
@@ -34,8 +40,7 @@ defmodule Binoculo.Args do
                 {:error, _} -> {:error, "invalid cidr or notation"}
                 {:ok, _} -> {:ok, notation}
               end
-            end,
-            required: true
+            end
           ],
           ports: [
             value_name: "port(s)",
@@ -43,12 +48,11 @@ defmodule Binoculo.Args do
             long: "--port",
             help: "Port(s) to scan: 80,443,8080 or 80-8080 or 21,80-8080",
             parser: fn port ->
-              case parse_port_arg(port) do
+              case Util.parse_ports_notation(port) do
                 {:error, _} -> {:error, "invalid port(s)"}
                 {:ok, port_parsed} -> {:ok, port_parsed}
               end
-            end,
-            required: true
+            end
           ],
           output: [
             value_name: "output",
@@ -91,55 +95,6 @@ defmodule Binoculo.Args do
 
       _ ->
         {:ok, Optimus.parse!(optimus, argv)}
-    end
-  end
-
-  defp parse_port_arg(port_arg) do
-    ports =
-      String.trim(port_arg)
-      |> String.split(",")
-      |> Enum.map(fn port ->
-        case Regex.match?(~r/^\d+(-\d+)?$/, port) do
-          false -> {:error, port}
-          _ -> {:ok, port}
-        end
-      end)
-      |> Enum.split_with(fn {status, _port_value} -> status == :error end)
-
-    {invalid_ports, ports} = ports
-
-    if Enum.count(invalid_ports) > 0 do
-      {:error, "invalid port(s): #{inspect(invalid_ports)}"}
-    else
-      Enum.map(ports, fn {:ok, port} -> port end)
-      |> generate_port_range()
-    end
-  end
-
-  def generate_port_range(ports) do
-    ports
-    |> Enum.reduce_while({:ok, []}, fn port, {:ok, acc} ->
-      case parse_port(port) do
-        {:ok, port_list} -> {:cont, {:ok, acc ++ port_list}}
-        {:error, reason} -> {:halt, {:error, reason}}
-      end
-    end)
-  end
-
-  defp parse_port(port) do
-    case String.split(port, "-") do
-      [single_port] ->
-        {:ok, [String.to_integer(single_port)]}
-
-      [start_port, end_port] ->
-        start_port = String.to_integer(start_port)
-        end_port = String.to_integer(end_port)
-
-        if start_port <= end_port do
-          {:ok, Enum.to_list(start_port..end_port)}
-        else
-          {:error, "Invalid range: start port must be less than or equal to end port"}
-        end
     end
   end
 end
