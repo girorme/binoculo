@@ -16,6 +16,7 @@ A lightning-fast banner grabbing tool built with **Elixir**, designed to quickly
 - **Search Engine Integration**: Integrate with Meilisearch to index and query scan results for efficient data retrieval.
 - **Specific Banner Searches**: Perform targeted searches for specific service banners or versions.
 - **HTTP Write**: Send custom commands over HTTP to communicate with services and perform actions.
+- **HTTP Server Mode**: Start a lightweight HTTP server to expose scan results and interact with the tool programmatically.
 
 ### Requirements
 - Docker
@@ -40,7 +41,7 @@ Basic Usage:
 > In addition to saving the results with --output, you can use meilisearch/dashboard to store and visualize the results. ([meilisearch integration](#Meilisearch-Integration))
 
 ```bash
-Binoculo: You Know, for Banner Grabbing! Version: 1.2.1
+Binoculo: You Know, for Banner Grabbing! Version: 1.3.0
 
 USAGE:
     Binoculo --range <host_notation> --port <port(s)> [--output <file>] [--write <payload>] [--read <criteria>]
@@ -77,6 +78,32 @@ This command launches Meilisearch along with a dashboard where you can view your
 #### Using Meilisearch Endpoints
 
 In addition to the dashboard, you can also interact with Meilisearch (`localhost:7700`) directly via its API endpoints to perform searches. The scan results are indexed under the `hosts` index, allowing you to make custom queries and retrieve data without needing to use the dashboard interface. This gives you the flexibility to integrate Binoculo with other systems or tools that can consume the Meilisearch API for advanced searching and filtering.
+
+### Http server:
+
+```bash
+$ ./binoculo --server
+```
+
+This command starts an HTTP server on port `4000`, allowing you to interact with Binoculo via a REST API. The server exposes endpoints to retrieve scan results
+
+Once the HTTP server is running, you can interact with it using the following endpoints:
+
+- **POST /scan**: Trigger a new scan by sending a JSON payload with the scan parameters:
+  ```json
+  {
+    "host_notation": "192.168.101.1/24",
+    "ports": "21,22,80",
+    "read": "GET / HTTP/1.1"
+  }
+  ```
+
+Example usage with `curl`:
+```bash
+$ curl -X POST http://localhost:4000/scan -H "Content-Type: application/json" -d '{"host_notation":"192.168.101.1/24","ports":"80"}'
+```
+
+---
 
 ### Update Binoculo
 
