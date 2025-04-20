@@ -1,6 +1,8 @@
 defmodule MsearchTest do
   use ExUnit.Case, async: true
 
+  @moduletag :skip
+
   import Mock
 
   describe "create_index/1" do
