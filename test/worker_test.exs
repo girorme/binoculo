@@ -122,7 +122,7 @@ defmodule WorkerTest do
       host_ut = "127.0.0.1"
       Config.set_write_payload(%{write_payload: "foobar"})
 
-      {:ok, socket} = Worker.estabilish_connection(host_ut, socket_close_port, 500)
+      {:ok, socket} = Worker.estabilish_connection(host_ut, socket_close_port, 1)
       :gen_tcp.close(socket)
       {status, _reason} = Worker.send_payload(socket, host_ut, socket_close_port)
 

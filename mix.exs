@@ -8,7 +8,7 @@ defmodule Binoculo.MixProject do
       elixir: "~> 1.14",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
-      test_coverage: [tool: ExCoveralls, ignore_modules: [Binoculo]],
+      test_coverage: [tool: ExCoveralls, ignore_modules: [Binoculo, Binoculo.Msearch]],
       preferred_cli_env: [coveralls: :test, "coveralls.html": :test],
       escript: escript()
     ]
