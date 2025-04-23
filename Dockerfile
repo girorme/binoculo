@@ -1,5 +1,5 @@
 # Stage 1: Build the application
-FROM elixir:1.14 AS builder
+FROM elixir:1.18.3 AS builder
 
 # Set the working directory inside the container
 WORKDIR /app
@@ -16,7 +16,10 @@ RUN mix local.rebar --force \
     && mix escript.build
 
 # Stage 2: Create the final lightweight image
-FROM bitwalker/alpine-elixir:latest
+FROM elixir:1.18.3-alpine
+
+# Install tini
+RUN apk add --no-cache tini
 
 # Set the working directory inside the container
 WORKDIR /app
@@ -27,6 +30,6 @@ RUN chmod 777 output/
 # Copy from builder stage
 COPY --from=builder /app/bin/binoculo /app/bin/binoculo
 
-# Set the entry point and command to run when the container starts
-ENTRYPOINT ["/app/bin/binoculo"]
-CMD ["--help"]  # Provide a default argument to show usage info
+# Use tini as the entrypoint
+ENTRYPOINT ["/sbin/tini", "--", "/app/bin/binoculo"]
+CMD ["--help"]
