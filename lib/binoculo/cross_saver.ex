@@ -27,9 +27,13 @@ defmodule Binoculo.CrossSaver do
     # check if output dir exists and create it if not
     File.mkdir_p!("output")
 
-    Config.get_output_file()
+    file = Config.get_output_file()
+
+    file
     |> then(fn file -> "output/#{file}" end)
     |> File.write(results, [:append])
+
+    IO.puts("Results saved to file: #{file}")
   end
 
   defp check_and_save_to_msearch() do

@@ -9,9 +9,12 @@ defmodule Binoculo do
   def main(argv) do
     {:ok, parsed_args} = Args.parse_args(argv)
 
-    case get_in(parsed_args, [Access.key!(:flags), Access.key!(:server)]) do
-      nil -> init_cli(parsed_args)
-      _ -> start_server()
+    server_mode =
+      get_in(parsed_args, [Access.key!(:flags), Access.key!(:server)])
+
+    case server_mode do
+      true -> start_server()
+      _ -> init_cli(parsed_args)
     end
   end
 
@@ -56,7 +59,7 @@ defmodule Binoculo do
 
     IO.puts("Working...")
 
-    ProgressBar.render_spinner([text: "Loading", done: "Finished"], fn ->
+    ProgressBar.render_spinner([frames: :bars], fn ->
       progress()
     end)
 
