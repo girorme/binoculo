@@ -12,9 +12,9 @@ on:
     branches:
       - main
     paths-ignore:
-         - '.github/workflows/*'
-         - 'Dockerfile'
-         - 'README.md'
+      - ".github/workflows/*"
+      - "Dockerfile"
+      - "README.md"
 
 permissions:
   contents: read
@@ -29,8 +29,8 @@ jobs:
       - name: Set up Elixir
         uses: erlef/setup-beam@v1
         with:
-          elixir-version: "1.14.4" # Define the elixir version [required]
-          otp-version: "25" # Define the OTP version [required]
+          elixir-version: "1.18.3"
+          otp-version: "27.3.3"
 
       - name: Cache deps
         id: cache-deps
