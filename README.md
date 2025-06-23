@@ -43,7 +43,7 @@ Basic Usage:
 > In addition to saving the results with --output, you can use meilisearch/dashboard to store and visualize the results. ([meilisearch integration](#Meilisearch-Integration))
 
 ```bash
-Binoculo: You Know, for Banner Grabbing! Version: 1.3.0
+Binoculo: You Know, for Banner Grabbing! Version: 1.3.1
 
 USAGE:
     Binoculo --range <host_notation> --port <port(s)> [--output <file>] [--write <payload>] [--read <criteria>]
