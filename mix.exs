@@ -5,7 +5,7 @@ defmodule Binoculo.MixProject do
     [
       app: :binoculo,
       version: "1.3.0",
-      elixir: "~> 1.18",
+      elixir: "~> 1.17",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       test_coverage: [

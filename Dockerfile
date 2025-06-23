@@ -24,6 +24,8 @@ RUN apk add --no-cache tini
 # Set the working directory inside the container
 WORKDIR /app
 
+ENV MIX_ENV=prod
+
 RUN mkdir output/
 RUN chmod 777 output/
 
