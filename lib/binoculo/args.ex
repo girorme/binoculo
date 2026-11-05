@@ -3,7 +3,7 @@ defmodule Binoculo.Args do
   Parse arguments
   """
 
-  alias Binoculo.Util
+  alias Binoculo.{Planner, Util}
 
   def parse_args(argv) do
     version = Util.version()
@@ -87,6 +87,13 @@ defmodule Binoculo.Args do
             end,
             default: "output.txt"
           ],
+          errors_output: [
+            value_name: "errors_output",
+            long: "--errors-output",
+            help:
+              "Also save every failed host:port with stage and reason (debug, uses more memory on huge ranges)",
+            parser: fn file -> {:ok, file} end
+          ],
           write: [
             value_name: "write",
             short: "-w",
@@ -104,6 +111,27 @@ defmodule Binoculo.Args do
                 false -> {:ok, read_payload}
               end
             end
+          ],
+          concurrency: [
+            value_name: "concurrency",
+            long: "--concurrency",
+            help: "Max simultaneous connections",
+            parser: &parse_positive_integer/1,
+            default: Planner.default_concurrency()
+          ],
+          partitions: [
+            value_name: "partitions",
+            long: "--partitions",
+            help: "Number of parallel partitions the scan is split into (CPU cores by default)",
+            parser: &parse_positive_integer/1,
+            default: System.schedulers_online()
+          ],
+          timeout: [
+            value_name: "timeout",
+            long: "--timeout",
+            help: "Connect/read timeout in ms",
+            parser: &parse_positive_integer/1,
+            default: Planner.default_timeout()
           ]
         ]
       )
@@ -114,6 +142,13 @@ defmodule Binoculo.Args do
 
       _ ->
         {:ok, Optimus.parse!(optimus, argv)}
+    end
+  end
+
+  defp parse_positive_integer(value) do
+    case Integer.parse(value) do
+      {number, ""} when number > 0 -> {:ok, number}
+      _ -> {:error, "must be a positive integer"}
     end
   end
 end

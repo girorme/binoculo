@@ -32,6 +32,34 @@ defmodule Binoculo.Util do
     """
   end
 
+  @doc """
+  Current local date/time in ISO 8601 with UTC offset, e.g. `2026-11-05T14:17:04-03:00`.
+  """
+  def format_datetime() do
+    System.os_time(:second)
+    |> :calendar.system_time_to_rfc3339()
+    |> List.to_string()
+  end
+
+  @doc """
+  Human readable duration from milliseconds, e.g. `850ms`, `42.1s`, `3m 42.1s`, `1h 2m 3.0s`.
+  """
+  def format_duration(ms) when ms < 1000, do: "#{ms}ms"
+
+  def format_duration(ms) do
+    tenths = div(ms + 50, 100)
+    hours = div(tenths, 36_000)
+    minutes = div(rem(tenths, 36_000), 600)
+    rest = rem(tenths, 600)
+    seconds = "#{div(rest, 10)}.#{rem(rest, 10)}s"
+
+    cond do
+      hours > 0 -> "#{hours}h #{minutes}m #{seconds}"
+      minutes > 0 -> "#{minutes}m #{seconds}"
+      true -> seconds
+    end
+  end
+
   def parse_range_or_cidr_notation(notation) do
     cond do
       Regex.match?(@ip_common_re, notation) ->
@@ -41,7 +69,12 @@ defmodule Binoculo.Util do
         IP.Subnet.from_string(notation)
 
       Regex.match?(@ip_range_re, notation) ->
-        IP.Range.from_string(notation)
+        # IP.Range raises when the first address is greater than the last
+        try do
+          IP.Range.from_string(notation)
+        rescue
+          ArgumentError -> {:error, "invalid_format"}
+        end
 
       true ->
         {:error, "invalid_format"}
@@ -55,9 +88,10 @@ defmodule Binoculo.Util do
 
     resp =
       unless empty?(key_value) do
-        for session <- key_value, into: %{} do
-          [key, value] = String.split(session, ": ", parts: 2)
-          {key, value}
+        # servers may send "Key:value" (no space) or lines without ":"; never crash on them
+        for session <- key_value, String.contains?(session, ":"), into: %{} do
+          [key, value] = String.split(session, ":", parts: 2)
+          {key, String.trim_leading(value)}
         end
       end
 

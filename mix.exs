@@ -4,7 +4,7 @@ defmodule Binoculo.MixProject do
   def project do
     [
       app: :binoculo,
-      version: "1.3.1",
+      version: "1.4.0",
       elixir: "~> 1.17",
       start_permanent: Mix.env() == :prod,
       deps: deps(),

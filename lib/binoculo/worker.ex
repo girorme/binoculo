@@ -9,21 +9,47 @@ defmodule Binoculo.Worker do
   @type host_port() :: integer()
   @type banner() :: String.t()
 
-  @spec get_banner(host(), host_port()) :: {:ok, banner()} | {:error, term()}
-  def get_banner(host, port, timeout \\ :timer.seconds(2)) do
-    with {:ok, socket} <- estabilish_connection(host, port, timeout),
-         {:ok, socket} <- send_payload(socket, host, port),
-         {:ok, response} <- recv_response(socket, timeout) do
+  @doc """
+  Grabs the banner of `host:port`.
+
+  Options: `:write_payload` overrides the payload stored in `Binoculo.Config`
+  (pass it when scanning in bulk to avoid one `Config` call per unit).
+  """
+  @spec get_banner(host(), host_port(), timeout(), keyword()) ::
+          {:ok, map()} | {:error, map()}
+  def get_banner(host, port, timeout \\ :timer.seconds(2), opts \\ []) do
+    write_payload = Keyword.get_lazy(opts, :write_payload, &Config.get_write_payload/0)
+
+    case estabilish_connection(host, port, timeout) do
+      {:ok, socket} ->
+        result = grab(socket, host, port, write_payload, timeout)
+        :gen_tcp.close(socket)
+        result
+
+      {:error, reason} ->
+        error_result(host, port, reason, :connect)
+    end
+  end
+
+  defp grab(socket, host, port, write_payload, timeout) do
+    with {:send, {:ok, socket}} <- {:send, send_payload(socket, host, port, write_payload)},
+         {:recv, {:ok, response}} <- {:recv, recv_response(socket, timeout)} do
       {:ok, %{host: host, port: port, response: to_string(response)}}
     else
-      {:error, reason} ->
-        {:error,
-         %{
-           host: host,
-           port: port,
-           response: "Error returning banner... socket response: #{reason}"
-         }}
+      {stage, {:error, reason}} -> error_result(host, port, reason, stage)
     end
+  end
+
+  # stage: where it failed (:connect, :send, or :recv = connected but no banner)
+  defp error_result(host, port, reason, stage) do
+    {:error,
+     %{
+       host: host,
+       port: port,
+       stage: stage,
+       reason: reason,
+       response: "Error returning banner... socket response: #{reason}"
+     }}
   end
 
   def estabilish_connection(host, port, timeout) do
@@ -36,7 +62,10 @@ defmodule Binoculo.Worker do
     end
   end
 
-  def send_payload(socket, host, port) do
+  def send_payload(socket, host, port),
+    do: send_payload(socket, host, port, Config.get_write_payload())
+
+  def send_payload(socket, host, port, write_payload) do
     payload =
       case get_service_type_by_port!(port) do
         :http -> "HEAD / HTTP/1.1\r\nHost: #{host}\r\n\r\n"
@@ -45,7 +74,7 @@ defmodule Binoculo.Worker do
 
     # User write payload
     payload =
-      if write_payload = Config.get_write_payload() do
+      if write_payload do
         case String.ends_with?(write_payload, "\r\n\r\n") do
           true -> write_payload
           false -> "#{write_payload}\r\n\r\n"

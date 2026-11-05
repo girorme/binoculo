@@ -10,6 +10,27 @@ defmodule Binoculo.CrossSaver do
     check_and_save_to_msearch()
   end
 
+  @doc """
+  Writes the kept failed units to `output/<file>`, one `host:port stage reason` per line.
+  """
+  def save_errors(file) do
+    lines =
+      Results.get_errors()
+      |> Enum.sort_by(fn {host, port, _, _} -> {ip_sort_key(host), port} end)
+      |> Enum.map(fn {host, port, stage, reason} -> "#{host}:#{port} #{stage} #{reason}\n" end)
+
+    File.mkdir_p!("output")
+    File.write("output/#{file}", lines)
+    IO.puts("Errors saved to file: #{file}")
+  end
+
+  defp ip_sort_key(host) do
+    case :inet.parse_address(String.to_charlist(host)) do
+      {:ok, ip} -> ip
+      _ -> {host}
+    end
+  end
+
   defp check_and_save_to_file() do
     save_to_file_enabled?()
     |> save_to_file()
@@ -49,7 +70,18 @@ defmodule Binoculo.CrossSaver do
       Results.get_finished()
       |> check_and_filter_read_payload()
 
-    Enum.each(results, &Msearch.save/1)
+    # a bad payload must not abort the scan summary
+    failed =
+      Enum.count(results, fn result ->
+        try do
+          Msearch.save(result)
+          false
+        rescue
+          _ -> true
+        end
+      end)
+
+    if failed > 0, do: IO.puts("[!] #{failed} result(s) could not be saved to Meilisearch")
 
     :ok
   end

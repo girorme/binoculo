@@ -1,89 +1,98 @@
 defmodule Binoculo.Maestro do
   @moduledoc """
-  Coordinate workers spawn and result saving"
+  Runs a scan plan: every partition scans its slice in parallel with its own
+  concurrency limit and writes straight to `Binoculo.Results` (no central mailbox).
+
+  `Binoculo.Results.init_db/1` must be called by the caller before `run/2`.
   """
-  use GenServer
 
-  require Logger
-  alias Binoculo.{Results, Worker, Util}
+  alias Binoculo.{Config, Planner, Results, Worker}
 
-  def start_get_banner_workers(host_notation, ports) do
-    {:ok, range} = Util.parse_range_or_cidr_notation(host_notation)
+  # connection errors caused by this machine's limits, not by the target
+  @resource_errors [:emfile, :enfile, :eaddrnotavail]
 
-    # improve logic to receive "daemon" mode, to run in background receiving commands
-    range
-    |> Stream.map(&IP.to_string/1)
-    |> Task.async_stream(
-      fn host ->
-        Enum.each(ports, fn port ->
-          start_worker(host, port)
-        end)
-      end,
-      max_concurrency: 200,
-      timeout: :infinity,
-      ordered: false
-    )
-    |> Stream.run()
+  @doc """
+  Scans every unit of the plan and waits for all partitions.
 
-    qty_to_run = Enum.to_list(range) |> Enum.count()
+  A crashed partition does not stop the others; it is reported in
+  `:failed_partitions` and its unscanned units in `:not_processed`.
 
-    {:ok, qty_to_run}
-  end
+  Options: `:scan_fun` - `(host, port, timeout, opts -> {:ok, map} | {:error, map})`
+  (default `Binoculo.Worker.get_banner/4`).
+  """
+  @spec run(Planner.t(), keyword()) :: %{
+          failed_partitions: [non_neg_integer()],
+          not_processed: non_neg_integer()
+        }
+  def run(%Planner{} = plan, opts \\ []) do
+    scan_fun = Keyword.get(opts, :scan_fun, &Worker.get_banner/4)
+    scan_opts = [write_payload: Config.get_write_payload()]
 
-  @spec start_link(any) :: :ignore | {:error, any} | {:ok, pid}
-  def start_link(_args) do
-    GenServer.start_link(__MODULE__, %{}, name: __MODULE__)
-  end
-
-  @spec init(any()) :: {:ok, any()}
-  def init(state) do
-    start_result_db()
-    {:ok, state}
-  end
-
-  defp start_worker(host, port) do
-    GenServer.cast(__MODULE__, {:start_worker, %{host: host, port: port}})
-  end
-
-  defp start_result_db() do
-    with false <- Results.is_started?() do
-      Results.init_db()
-    end
-  end
-
-  defp finish_item(host_info) do
-    Results.finish_item(host_info)
-    :ok
-  end
-
-  defp remove_item(host_info) do
-    Results.remove_item(host_info)
-    :ok
-  end
-
-  def handle_cast({:start_worker, %{host: host, port: port} = host_info}, state) do
-    Results.add_item(host_info)
-    Task.async(Worker, :get_banner, [host, port])
-    {:noreply, state}
-  end
-
-  def handle_info({_ref, {status, host_info}}, state) do
-    host_info =
-      Map.put(
-        host_info,
-        :id,
-        :crypto.hash(:md5, "#{host_info.host} <> #{host_info.port}") |> Base.encode16()
+    results =
+      Task.Supervisor.async_stream_nolink(
+        Binoculo.TaskSupervisor,
+        plan.partitions,
+        &run_partition(plan, &1, scan_fun, scan_opts),
+        max_concurrency: length(plan.partitions),
+        timeout: :infinity,
+        ordered: true
       )
 
-    case status do
-      :ok -> finish_item(host_info)
-      :error -> remove_item(host_info)
-    end
+    plan.partitions
+    |> Enum.zip(results)
+    |> Enum.reduce(%{failed_partitions: [], not_processed: 0}, fn
+      {_partition, {:ok, :ok}}, acc ->
+        acc
 
-    {:noreply, state}
+      {%{index: index, len: len}, {:exit, _reason}}, acc ->
+        %{
+          failed_partitions: acc.failed_partitions ++ [index],
+          not_processed: acc.not_processed + len - Results.partition_done(index)
+        }
+    end)
   end
 
-  def handle_info(_msg, state) do
-    {:noreply, state}
+  defp run_partition(plan, %{index: index, concurrency: concurrency} = partition, scan_fun, opts) do
+    plan
+    |> Planner.targets(partition)
+    |> Task.async_stream(
+      fn {host, port} -> scan_unit(host, port, index, plan.timeout, scan_fun, opts) end,
+      max_concurrency: concurrency,
+      # connect + recv, each bounded by the plan timeout
+      timeout: 2 * plan.timeout + 1_000,
+      on_timeout: :kill_task,
+      ordered: false
+    )
+    |> Enum.each(fn
+      {:ok, _} ->
+        :ok
+
+      {:exit, :timeout} ->
+        Results.put_error(%{stage: :unit, reason: :timeout})
+        Results.incr(:error, index)
+    end)
+  end
+
+  defp scan_unit(host, port, index, timeout, scan_fun, opts) do
+    case safe_scan(scan_fun, host, port, timeout, opts) do
+      {:ok, info} ->
+        Results.put_result(info)
+        Results.incr(:ok, index)
+
+      {:error, %{reason: reason} = info} when reason in @resource_errors ->
+        Results.put_error(info)
+        Results.incr(:resource_error, index)
+
+      {:error, info} ->
+        Results.put_error(info)
+        Results.incr(:error, index)
+    end
+  end
+
+  # an exception in one unit must not take the whole partition down
+  defp safe_scan(scan_fun, host, port, timeout, opts) do
+    scan_fun.(host, port, timeout, opts)
+  rescue
+    _ -> {:error, %{host: host, port: port, stage: :unit, reason: :exception}}
   end
 end

@@ -89,5 +89,12 @@ if ! docker network inspect $NETWORK_NAME &> /dev/null; then
 fi
 
 echo -e "${YELLOW}Launching binoculo via docker${NC}"
-docker run --name binoculo --rm --network $NETWORK_NAME -v $(pwd)/output:/app/output --env-file ./.env $DOCKER_IMAGE "$@"
+
+# show local time (not UTC) in the scan start/end times; the path doesn't exist on every host
+TZ_MOUNT=()
+if [[ "$(uname -s)" == "Linux" && -f /etc/localtime ]]; then
+    TZ_MOUNT=(-v /etc/localtime:/etc/localtime:ro)
+fi
+
+docker run --name binoculo --rm --network $NETWORK_NAME --ulimit nofile=65536:65536 "${TZ_MOUNT[@]}" -v $(pwd)/output:/app/output --env-file ./.env $DOCKER_IMAGE "$@"
 echo -e "${GREEN}Binoculo execution completed.${NC}"

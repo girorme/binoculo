@@ -65,6 +65,38 @@ Save Only Matching Criteria:
 $ ./binoculo --range 192.168.101.1/24 -p 80 --output result.txt -w "HEAD / HTTP/1.1" -r "Apache"
 ```
 
+Tune the scan (large ranges, e.g. `/16`):
+```bash
+$ ./binoculo --range 10.0.0.0/16 -p 22 --concurrency 5000 --partitions 8 --timeout 1500
+```
+
+| Option | Default | Description |
+|---|---|---|
+| `--concurrency` | `1000` (lower if `ulimit -n` is low) | Max simultaneous connections (split across the partitions) |
+| `--partitions` | CPU cores | Parts the hosts x ports work is split into and scanned in parallel |
+| `--timeout` | `500` | Connect/read timeout per host:port, in ms. It only costs time on hosts that do not answer (most of a big range); hosts slower than this are missed, use e.g. `--timeout 3000` to find more |
+
+The defaults come from measuring a /18 on port 22: what matters is the rate of new connections
+(`concurrency / timeout`). `5000` / `2000` found 20 banners in 8s, `1000` / `500` found 31 in 9s,
+`1000` / `3000` found 48 in 51s and `300` / `2000` found 54 in 1m54s; a very high rate loses SYNs and
+a short timeout misses slow hosts. Raise the timeout to miss less or the concurrency for speed,
+depending on your network.
+
+Every connection needs a file descriptor, so a high `--concurrency` needs a high `ulimit -n`.
+Docker containers start with a soft limit of 1024, so the `./binoculo` launcher runs the container
+with `--ulimit nofile=65536:65536`. If `--concurrency` is not given, it is lowered to fit the
+limit found at startup. When the machine runs out of descriptors/ports the scan reports
+`Resource errors` and suggests a lower `--concurrency`.
+
+To debug why hosts did not answer, the summary lists the errors by `stage/reason`
+(`connect` = could not connect, `recv` = connected but no banner arrived in `--timeout`), and
+`--errors-output errors.txt` saves every failed `host:port stage reason` to `output/errors.txt`.
+If `recv/timeout` is high, try a larger `--timeout` and/or a lower `--concurrency` and compare the banners.
+
+At the end of each scan Binoculo prints the start and end time, how long the scan and the saving
+of the results took, the rate in units/s (a unit is one host:port) and the amount of banners, errors
+and resource errors. Use it to compare the same scan between versions or settings.
+
 ### Meilisearch Integration
 
 ```bash

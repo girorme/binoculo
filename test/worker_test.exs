@@ -68,12 +68,38 @@ defmodule WorkerTest do
       host_ut = "127.0.0.1"
       port_ut = 9999
 
-      {:error, %{response: response, host: host, port: port}} =
+      {:error, %{response: response, host: host, port: port, reason: reason}} =
         Worker.get_banner(host_ut, port_ut, 1)
 
       assert host_ut == host
       assert port_ut == port
       assert response =~ ~r/Error returning banner/i
+      assert is_atom(reason)
+    end
+
+    test "tells where it failed: connect refused vs connected but silent" do
+      assert {:error, %{stage: :connect}} = Worker.get_banner("127.0.0.1", 9999, 200)
+
+      # accepts the connection but never sends a banner
+      {:ok, listen} = :gen_tcp.listen(0, [:binary, active: false, reuseaddr: true])
+      {:ok, port} = :inet.port(listen)
+
+      assert {:error, %{stage: :recv, reason: :timeout}} =
+               Worker.get_banner("127.0.0.1", port, 100, write_payload: nil)
+
+      :gen_tcp.close(listen)
+    end
+
+    test "write_payload option takes precedence over the configured payload", %{
+      custom_http_port: custom_http_port
+    } do
+      Config.set_write_payload(%{write_payload: "from config"})
+
+      assert {:ok, %{response: "hello server"}} =
+               Worker.get_banner("127.0.0.1", custom_http_port, 1000, write_payload: nil)
+
+      assert {:ok, %{response: "hello server"}} =
+               Worker.get_banner("127.0.0.1", custom_http_port, 1000, write_payload: "GET /")
     end
 
     test "get error and reason when host is not reachable" do

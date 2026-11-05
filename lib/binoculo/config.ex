@@ -4,7 +4,6 @@ defmodule Binoculo.Config do
   """
 
   use GenServer
-  alias Binoculo.Maestro
 
   @initial_state %{
     output_file: "output/result"
@@ -44,10 +43,6 @@ defmodule Binoculo.Config do
 
   def get_read_payload() do
     GenServer.call(__MODULE__, :get_read_payload)
-  end
-
-  def start_maestro() do
-    Supervisor.start_child(Binoculo.Supervisor, Maestro)
   end
 
   def handle_cast({:set_output_file, file_name}, state) do

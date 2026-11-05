@@ -9,7 +9,8 @@ defmodule Binoculo.Application do
   @impl true
   def start(_type, _args) do
     children = [
-      {Config, %{}}
+      {Config, %{}},
+      {Task.Supervisor, name: Binoculo.TaskSupervisor}
     ]
 
     opts = [strategy: :one_for_one, name: Binoculo.Supervisor]

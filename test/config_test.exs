@@ -30,10 +30,4 @@ defmodule ConfigTest do
     Config.set_read_payload(%{read_payload: nil})
     assert nil == Config.get_read_payload()
   end
-
-  test "should start maestro via config module" do
-    assert {:ok, pid} = Config.start_maestro()
-    assert is_pid(pid)
-    Process.exit(pid, :kill)
-  end
 end
