@@ -96,5 +96,12 @@ if [[ "$(uname -s)" == "Linux" && -f /etc/localtime ]]; then
     TZ_MOUNT=(-v /etc/localtime:/etc/localtime:ro)
 fi
 
-docker run --name binoculo --rm --network $NETWORK_NAME --ulimit nofile=65536:65536 "${TZ_MOUNT[@]}" -v $(pwd)/output:/app/output --env-file ./.env $DOCKER_IMAGE "$@"
+# create output/ as the current user and run as that user, so the files are not owned by root
+mkdir -p output
+if [[ ! -w output ]]; then
+    echo -e "${YELLOW}output/ is not writable by you (probably created by an older run as root). Fix with:${NC} sudo chown -R $(id -u):$(id -g) output"
+    exit 1
+fi
+
+docker run --name binoculo --rm --user "$(id -u):$(id -g)" --network $NETWORK_NAME --ulimit nofile=65536:65536 "${TZ_MOUNT[@]}" -v "$(pwd)/output:/app/output" --env-file ./.env $DOCKER_IMAGE "$@"
 echo -e "${GREEN}Binoculo execution completed.${NC}"

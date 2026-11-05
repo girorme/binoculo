@@ -128,13 +128,13 @@ defmodule Binoculo do
     )
   end
 
-  defp print_error_breakdown([]), do: :ok
+  defp print_error_breakdown([], _timeout), do: :ok
 
-  defp print_error_breakdown(breakdown) do
+  defp print_error_breakdown(breakdown, timeout) do
     IO.puts("[*] Errors by stage/reason:")
 
-    for {stage, reason, count} <- breakdown do
-      IO.puts("      #{String.pad_trailing("#{stage}/#{reason}", 28)} #{count}")
+    for entry <- breakdown do
+      IO.puts(Util.format_error_line(entry, timeout, Planner.default_timeout()))
     end
   end
 
@@ -150,7 +150,7 @@ defmodule Binoculo do
         "Resource errors: #{progress.resource_error} | Not processed: #{summary.not_processed}"
     )
 
-    print_error_breakdown(Results.error_breakdown())
+    print_error_breakdown(Results.error_breakdown(), plan.timeout)
 
     if progress.resource_error > 0 do
       IO.puts(

@@ -15,6 +15,8 @@ Faster scans of large ranges (`/16` and up) and scan timing in the output.
 - Defaults (`--concurrency 1000`, `--timeout 500`) favour speed. Measured on a `/18`, port 22:
   5000/2000 found 20 banners in 8s (lost SYNs from the burst), 1000/500 found 31 in 9s,
   1000/3000 found 48 in 51s, 300/2000 found 54 in 1m54s. Use `--timeout 3000` to miss fewer hosts.
+- `connect/timeout` in the error breakdown shows a yellow hint: `try increasing the timeout with
+  --timeout <ms> - now: 500ms, default: 500ms` (no colors if `NO_COLOR` is set).
 - Scan plan printed before starting (units, partitions, concurrency, timeout).
 - Summary with banners, errors, resource errors (file descriptors/ports exhausted on this machine)
   and units not processed. Resource errors are no longer hidden as "host did not answer".
@@ -37,6 +39,9 @@ Faster scans of large ranges (`/16` and up) and scan timing in the output.
   per connection), closes the socket and returns the error `reason`.
 
 ### Fixed
+- Files created in `output/` were owned by root and could not be deleted from the host. The launcher
+  now runs the container as your user and creates `output/` itself. If `output/` already belongs to
+  root (older runs), it stops with the `sudo chown` command to fix it once.
 - A response header without a space after the colon (`X-XSS-Protection:1; mode=block`) crashed the
   run while saving to Meilisearch, before the summary. The parser now accepts it and a failing result
   can no longer abort the run.

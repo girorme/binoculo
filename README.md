@@ -34,6 +34,7 @@ $ ./binoculo -r 192.168.101.1/24 -p 21,22 --output my_result.txt
 ```
 
 Results will be saved in output/my_result.txt.
+The container runs as your user, so the files in `output/` belong to you. If an older run left `output/` owned by root, fix it once with `sudo chown -R $USER output`.
 
 ---
 

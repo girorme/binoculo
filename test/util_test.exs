@@ -66,6 +66,33 @@ defmodule UtilTest do
     assert is_map(Util.format_http_response(header))
   end
 
+  describe "format_error_line/3" do
+    test "should hint to raise the timeout, in yellow, on connect/timeout" do
+      System.delete_env("NO_COLOR")
+      line = Util.format_error_line({:connect, :timeout, 32_132}, 500, 500)
+
+      assert line =~ "connect/timeout"
+      assert line =~ "32132"
+      assert line =~ "--timeout <ms> - now: 500ms, default: 500ms"
+      assert line =~ IO.ANSI.yellow()
+      assert line =~ IO.ANSI.reset()
+    end
+
+    test "should not use colors when NO_COLOR is set" do
+      System.put_env("NO_COLOR", "1")
+      on_exit(fn -> System.delete_env("NO_COLOR") end)
+
+      line = Util.format_error_line({:connect, :timeout, 5}, 500, 500)
+      assert line =~ "try increasing the timeout"
+      refute line =~ "\e["
+    end
+
+    test "should not add a hint to other errors" do
+      assert "      connect/econnrefused         7" ==
+               Util.format_error_line({:connect, :econnrefused, 7}, 500, 500)
+    end
+  end
+
   test "should not crash on headers without a space after the colon or without a colon" do
     header =
       "HTTP/1.1 200 OK\r\nX-XSS-Protection:1; mode=block\r\nServer: nginx\r\nbroken line\r\n\r\n"

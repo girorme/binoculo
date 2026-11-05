@@ -42,6 +42,27 @@ defmodule Binoculo.Util do
   end
 
   @doc """
+  One line of the error breakdown. `connect/timeout` gets a yellow hint to raise `--timeout`
+  (`NO_COLOR` set means no colors).
+  """
+  def format_error_line({stage, reason, count}, timeout, default_timeout) do
+    line = "      #{String.pad_trailing("#{stage}/#{reason}", 28)} #{count}"
+
+    case {stage, reason} do
+      {:connect, :timeout} ->
+        hint =
+          "try increasing the timeout with --timeout <ms> - now: #{timeout}ms, default: #{default_timeout}ms"
+
+        if System.get_env("NO_COLOR"),
+          do: "#{line}  (#{hint})",
+          else: "#{line}  #{IO.ANSI.yellow()}(#{hint})#{IO.ANSI.reset()}"
+
+      _ ->
+        line
+    end
+  end
+
+  @doc """
   Human readable duration from milliseconds, e.g. `850ms`, `42.1s`, `3m 42.1s`, `1h 2m 3.0s`.
   """
   def format_duration(ms) when ms < 1000, do: "#{ms}ms"
