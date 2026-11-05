@@ -91,6 +91,8 @@ limit found at startup. When the machine runs out of descriptors/ports the scan 
 
 To debug why hosts did not answer, the summary lists the errors by `stage/reason`
 (`connect` = could not connect, `recv` = connected but no banner arrived in `--timeout`), and
+`--json-output output.json` also saves the results as a JSON list (one object per `host:port` with `id`, `host`, `port` and `response`) to `output/output.json`.
+
 `--errors-output errors.txt` saves every failed `host:port stage reason` to `output/errors.txt`.
 If `recv/timeout` is high, try a larger `--timeout` and/or a lower `--concurrency` and compare the banners.
 

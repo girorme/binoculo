@@ -87,6 +87,13 @@ defmodule Binoculo.Args do
             end,
             default: "output.txt"
           ],
+          json_output: [
+            value_name: "json_output",
+            long: "--json-output",
+            help:
+              "Also save results as a JSON list (one object per host:port) to output/<file>, e.g: output.json",
+            parser: fn file -> {:ok, file} end
+          ],
           errors_output: [
             value_name: "errors_output",
             long: "--errors-output",
