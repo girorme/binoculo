@@ -31,6 +31,7 @@ defmodule Binoculo do
     ports = options.ports
     port_count = Enum.count(ports)
     errors_output = Map.get(options, :errors_output)
+    json_output = Map.get(options, :json_output)
 
     config = %{
       output_file: options.output,
@@ -92,6 +93,7 @@ defmodule Binoculo do
     IO.puts("\n\nSaving results...")
 
     CrossSaver.save_results()
+    if json_output, do: CrossSaver.save_json(json_output)
     if errors_output, do: CrossSaver.save_errors(errors_output)
 
     total_ms = System.monotonic_time(:millisecond) - started_ms

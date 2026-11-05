@@ -24,6 +24,37 @@ defmodule Binoculo.CrossSaver do
     IO.puts("Errors saved to file: #{file}")
   end
 
+  @doc """
+  Writes the results to `output/<file>` as a JSON list, one object per host:port.
+  """
+  def save_json(file) do
+    objects =
+      Results.get_finished()
+      |> check_and_filter_read_payload()
+      |> Enum.sort_by(fn %{host: host, port: port} -> {ip_sort_key(host), port} end)
+      |> Enum.map(&to_json_object/1)
+
+    File.mkdir_p!("output")
+    File.write!("output/#{file}", Jason.encode!(objects, pretty: true))
+    IO.puts("JSON results saved to file: #{file}")
+  end
+
+  defp to_json_object(info) do
+    %{
+      id: info[:id],
+      host: info.host,
+      port: info.port,
+      response: scrub(info[:response])
+    }
+  end
+
+  defp scrub(nil), do: nil
+  defp scrub(value) when is_binary(value) do
+    if String.valid?(value), do: value, else: value |> :binary.bin_to_list() |> List.to_string()
+  end
+
+  defp scrub(value), do: inspect(value)
+
   defp ip_sort_key(host) do
     case :inet.parse_address(String.to_charlist(host)) do
       {:ok, ip} -> ip
